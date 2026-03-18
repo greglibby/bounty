@@ -1,0 +1,22 @@
+/* ============================================================
+   BOUNTY — styles.css
+   
+   This file has been fully modularised.
+   All rules now live in their respective component files:
+
+   css/tokens.css
+   css/reset.css
+   css/animations.css
+   css/typography.css
+   css/modes.css
+   css/components/cards.css
+   css/components/player-box.css
+   css/components/buttons.css
+   css/components/hud.css
+   css/components/modals.css
+   css/screens/home.css
+   css/screens/game.css
+
+   This file is kept as a placeholder.
+   Safe to delete once all <link> tags are confirmed working.
+   ============================================================ */

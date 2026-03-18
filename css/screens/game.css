@@ -1,0 +1,362 @@
+/* ============================================================
+   BOUNTY — GAME SCREEN LAYOUT
+   css/screens/game.css
+
+   Covers the structural skeleton of the game screen:
+     - #game-container   Full-viewport flex column
+     - #top-section      HUD + CPU grid + mode banner (top-pinned)
+     - #director-zone    Flex-fill middle (upcard, flip card, menu)
+     - #game-ui-stack    Card + message column inside director-zone
+     - #upcard-wrapper   Horizontal card pair (up + flip)
+     - .card-zone        Individual card + zone wrapper
+     - .zone-label       Always hidden per design spec
+     - #bottom-section   Controls + human hand (bottom-pinned)
+     - #cpu-player-grid  3-player horizontal CPU row
+     - Background images (game + home)
+   ============================================================ */
+
+/* ── BACKGROUNDS ────────────────────────────────────────────
+   ──────────────────────────────────────────────────────────── */
+body.game-active #game-container {
+  background-image: url("../../images/bg-game.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body:not(.game-active) #game-container,
+#name-overlay {
+  background-image: url("../../images/bg-home.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── GAME CONTAINER ─────────────────────────────────────────
+   3-row CSS Grid fills the full dynamic viewport height.
+   Row 1 (top-section):   auto  — shrinks to content
+   Row 2 (director-zone): 1fr   — absorbs all remaining space
+   Row 3 (bottom-section): auto — shrinks to content
+   Row 4 (ingame-nav-bar): auto — fixed footer, game-active only
+   This prevents overflow on short screens and keeps the nav
+   permanently anchored at the bottom without scrollbars.
+   ──────────────────────────────────────────────────────────── */
+#game-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding: 8px 0 0;
+  box-sizing: border-box;
+}
+
+/* ── TOP SECTION ────────────────────────────────────────────
+   Pinned to top. Contains (in order):
+   #hud-bar → #cpu-player-grid → #mode-banner-container
+   ──────────────────────────────────────────────────────────── */
+#top-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex-shrink: 0;
+  padding: 2px 4px 0;
+  margin-bottom: 0;
+}
+
+/* ── DIRECTOR ZONE ──────────────────────────────────────────
+   Grid row 2 (1fr) — fills all remaining space between top and
+   bottom. min-height: 0 is critical in grid context to prevent
+   overflow blowing out the grid.
+   Top padding uses clamp() so on very short screens (iPhone SE)
+   the card zone isn't unnecessarily choked.
+   ──────────────────────────────────────────────────────────── */
+#director-zone {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  padding: clamp(20px, 5vh, 50px) 10px 0;
+  overflow: visible;
+  gap: 0;
+}
+
+/* Stacked card + message box column */
+#game-ui-stack {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+body.game-active #game-ui-stack {
+  display: flex;
+}
+
+/* ── UPCARD WRAPPER ─────────────────────────────────────────
+   Side-by-side up card and flip card slots.
+   ──────────────────────────────────────────────────────────── */
+
+/* Wrapper for one card + its (hidden) label */
+.card-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Zone labels removed per design spec — image cards are self-labelling */
+.zone-label {
+  display: none !important;
+}
+
+/* ── BOTTOM SECTION ─────────────────────────────────────────
+   Grid row 3. Contains #controls + .human-box.
+   padding-bottom matches the #game-container top padding (8px)
+   so the gap between the human box and the nav bar mirrors the
+   gap between the top of the screen and the HUD.
+   ──────────────────────────────────────────────────────────── */
+#bottom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex-shrink: 0;
+  padding: 0 10px 12px;
+}
+
+/* Extra breathing room between action buttons and human hand —
+   scales down on short viewports so nothing gets squeezed off screen */
+#bottom-section #controls {
+  margin-bottom: clamp(16px, 4vh, 40px);
+}
+
+/* ── CPU PLAYER GRID ────────────────────────────────────────
+   3 CPU player boxes in a horizontal row.
+   padding-top uses the fluid avatar-cpu-offset token so the
+   space for avatar bleed scales with the avatar clamp() range.
+   ──────────────────────────────────────────────────────────── */
+#cpu-player-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  padding-top: calc(var(--avatar-cpu-offset) + 0.5vh);
+  padding-bottom: calc(var(--avatar-cpu-offset) + 0.5vh);
+}
+
+/* ── DANGER METER ───────────────────────────────────────────
+   Single-track fill bar. Always visible during game-active.
+   Track is a translucent grey pill at 60% screen width.
+   Fill is a green→red gradient that expands left-to-right
+   as JS drives --danger-fill via the element's style width.
+   ──────────────────────────────────────────────────────────── */
+#danger-meter {
+  display: none;
+  width: 60vw;
+  max-width: 340px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  margin: 8px auto 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+body.game-active #danger-meter {
+  display: block;
+}
+
+#danger-meter-fill {
+  height: 100%;
+  width: 10%;
+  background: linear-gradient(
+    to right,
+    #3da36e 0%,
+    #e6a020 55%,
+    #e03030 100%
+  );
+  background-size: 340px 100%;
+  border-radius: 4px;
+  transition: width 0.35s ease;
+}
+
+#danger-meter.danger-max {
+  animation: danger-meter-pulse 0.5s ease-in-out infinite alternate;
+}
+
+
+/* --- Phase 2: Hybrid Testing Layout --- */
+.hybrid-test-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 65px;
+  width: 100%;
+  padding: 15px 5px;
+}
+
+/* New Discard Pile (Left) - Adjusted to standard card ratio */
+.discard-pile-slot {
+  position: relative;
+  width: var(--card-center-width);
+  aspect-ratio: 750 / 1065;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  overflow: visible !important; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+/* This draws the dotted box strictly inset so the card covers it completely */
+.discard-pile-slot::before {
+  content: "";
+  position: absolute;
+  inset: 5px; /* Inset by exactly 5px per spec */
+  border-radius: calc(var(--radius-md) - 3px); /* Match tuck */
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px dotted rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  z-index: 0; /* Keeps it behind the cards */
+}
+
+/* Persistent card element inside the stack */
+.strewn-card {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* History cards are non-interactive */
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+}
+
+/* ADD THIS NEW BLOCK */
+.transient-card {
+  z-index: 9999 !important; /* Force to top of stack */
+  border-radius: var(--radius-md); /* Required for box-shadow to curve */
+}
+
+.strewn-card .card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: var(--radius-md);
+}
+
+.draw-pile-slot {
+  position: relative;
+  width: var(--card-center-width);
+  aspect-ratio: 750 / 1100; /* Taller to account for the Deck.png baked shadow */
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  background: transparent; 
+}
+
+/* The footprint anchored to the bottom, explicitly mimicking the discard pile size */
+.draw-pile-slot::before {
+  content: "";
+  position: absolute;
+  bottom: 5px; /* Matched identically to discard pile */
+  left: 5px;   
+  width: calc(100% - 10px); 
+  aspect-ratio: 750 / 1065; /* Forces identical bounding box to discard target */
+  border-radius: calc(var(--radius-md) - 3px);
+  background: rgba(255, 255, 255, 0.03); 
+  border: 1.5px dotted rgba(255, 255, 255, 0.6);
+  box-sizing: border-box;
+  z-index: 0; 
+  pointer-events: none;
+}
+
+.hybrid-test-row .card-zone {
+  flex: 1;
+  max-width: 80px; /* Constrain for 4-across on mobile */
+}
+
+.draw-pile-img, .card-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  border-radius: inherit;
+}
+
+.draw-pile-badge {
+  position: absolute;
+  top: -10px;
+  right: -5px;
+  background: rgba(26, 39, 68, 0.85); /* Dark-blue avatar box color */
+  color: #fff;                        /* White text */
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.draw-pile-empty-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.mini-label::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 800;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.card-slot.mini-label::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: var(--mode-color);
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+#draw-pile-slot.filled::after {
+  content: attr(data-count);
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: var(--mode-color);
+  color: #000;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 4px;
+  z-index: 2;
+}
