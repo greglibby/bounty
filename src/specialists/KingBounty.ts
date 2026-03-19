@@ -1,84 +1,73 @@
-import { GameMode } from '../types/constants';
-import { GameState, TurnResult, BountyFlipStep, Specialist, EngineContext } from '../types/engine';
-import { Player, Card } from '../types/entities';
-import { Actions } from '../core/Actions';
+import { MODES } from "../constants.js";
+import { Actions } from "../core/Actions.js";
+import type { IGameEngine, Player, Card, GameState, SpecialistResult } from "../types/index.js";
+import type { Specialist } from "./Specialist.js";
 
-// ─────────────────────────────────────────────────────────
-// KING BOUNTY CHALLENGE IMPLEMENTATION
-// ─────────────────────────────────────────────────────────
-
-// We extend the Specialist interface locally to type the helper methods
-export interface KingBountySpecialist extends Specialist {
-  generateChallengeScript: (game: EngineContext) => TurnResult;
-  checkMatch: (player: Player, flippedCard: Card | null) => boolean;
+interface BountySequenceStep {
+  card: Card;
+  isMatch: boolean;
 }
 
-export const KingBounty: KingBountySpecialist = {
+interface ChallengeScript {
+  type: "ACCEPT_START";
+  sequence: BountySequenceStep[];
+  matchFound: boolean;
+  endTurn: true;
+}
+
+export const KingBounty: Omit<Specialist, "execute"> & {
+  generateChallengeScript(game: IGameEngine): ChallengeScript;
+  checkMatch(player: Player, flippedCard: Card | null): boolean;
+} = {
   canHandle(state: GameState): boolean {
     // The mode is set by Engine.syncGameState based purely on the Up Card being a King
-    return state.mode === GameMode.KingBounty;
+    return state.mode === MODES.KING_BOUNTY;
   },
 
-  resolve(game: EngineContext, choice?: string | number): TurnResult | null {
-    // 1. Strict Casing & Normalization
-    const safeChoice = String(choice || "").toUpperCase();
+  resolve(game: IGameEngine, choice: string | number): SpecialistResult | null {
+    const safeChoice = choice || "";
 
-    // 2. Decline Routing
     if (safeChoice === "DECLINE") {
-      // Return null so the Engine's interceptor handles the state swap and stat tracking
+      // Return null so the Engine's interceptor handles the state swap
       return null;
     }
 
-    // 3. Accept Routing
     if (safeChoice === "ACCEPT") {
-      return this.generateChallengeScript(game);
+      return this.generateChallengeScript(game) as unknown as SpecialistResult;
     }
 
     return null;
   },
 
-  /**
-   * Pre-calculates the entire draw sequence for the cinematic Director to play out.
-   */
-  generateChallengeScript(game: EngineContext): TurnResult {
+  generateChallengeScript(game: IGameEngine): ChallengeScript {
     const player = game.players[game.currentPlayerIndex];
-    
-    // Type Guard: filter out nulls and tell TS this is strictly an array of Cards
     const activeHand = player.hand.filter((c): c is Card => c !== null);
-    
-    const sequence: BountyFlipStep[] = [];
+    const sequence: BountySequenceStep[] = [];
     let matchFound = false;
 
-    // Draw up to the number of cards currently in the player's hand
     for (let i = 0; i < activeHand.length; i++) {
       const flipped = Actions.draw(game);
-      if (!flipped) break; // Deck empty fallback
+      if (!flipped) break;
 
-      const isMatch = activeHand.some((c: Card) => c.rank === flipped.rank);
+      const isMatch = activeHand.some((c) => c.rank === flipped.rank);
       sequence.push({ card: flipped, isMatch });
 
       if (isMatch) {
         matchFound = true;
-        break; // Stop drawing once a match is hit
+        break;
       }
     }
 
-    // Strict Return Payload matching TurnResult interface
     return {
-      success: matchFound, // Maps to the success property
       type: "ACCEPT_START",
-      flipped: null, // The actual flipped cards are contained in the sequence array
-      message: "BOUNTY_ACCEPTED", // Director will translate this to UI_STRINGS
-      sequence: sequence, // Required for the Director's GSAP loop
+      sequence: sequence,
+      matchFound: matchFound,
       endTurn: true,
     };
   },
 
-  /**
-   * Helper to verify if a single flipped card matches anything in the player's hand.
-   */
   checkMatch(player: Player, flippedCard: Card | null): boolean {
     if (!flippedCard) return false;
-    return player.hand.some((c: Card | null) => c !== null && c.rank === flippedCard.rank);
+    return player.hand.some((c) => c !== null && c.rank === flippedCard.rank);
   },
 };

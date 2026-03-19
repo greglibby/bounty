@@ -1,62 +1,55 @@
-import { GameMode, UI_STRINGS } from '../types/constants';
-import { GameState, TurnResult } from '../types/engine';
-import { Actions, GameContext } from '../core/Actions';
+// =============================================================================
+// BOUNTY — Standard Specialist
+// src/specialists/Standard.ts
+// =============================================================================
 
-// ─────────────────────────────────────────────────────────
-// SPECIALIST CONTRACT (Move to types/engine.ts later)
-// ─────────────────────────────────────────────────────────
-export interface Specialist {
-  canHandle: (state: GameState) => boolean;
-  resolve: (game: GameContext, guess?: string | number) => TurnResult | null;
-}
+import { MODES, UI_STRINGS } from "../constants.js";
+import { Actions } from "../core/Actions.js";
+import type { Specialist } from "./Specialist.js";
 
-// ─────────────────────────────────────────────────────────
-// STANDARD GUESS IMPLEMENTATION
-// ─────────────────────────────────────────────────────────
 export const Standard: Specialist = {
-  canHandle(state: GameState): boolean {
-    return state.mode === GameMode.Normal; // Strictly typed check
+  canHandle(state) {
+    return state.mode === MODES.NORMAL;
   },
 
-  resolve(game: GameContext, guess?: string | number): TurnResult | null {
-    // 1. Type Guard: Ensure we actually have an upCard to compare against
-    const upCard = game.upCard;
-    if (!upCard) return null;
-
-    // 2. Execute Draw
+  resolve(game, guess) {
     const flipped = Actions.draw(game);
     if (!flipped) return null;
 
-    // Normalize guess, handling potential undefined/number values safely
+    const upCard = game.upCard;
+
+    // NOTE (pre-existing): upCard is theoretically Card | null, but syncGameState
+    // guarantees it is non-null before any guess is processed. The non-null
+    // assertion below preserves the original behaviour without a logic change.
+    const upCardRank = upCard!.rank;
+
+    // String(guess) coerces the `string | number` union so .toLowerCase() is
+    // safe. In practice guess is always "higher" | "lower" for Standard mode.
     const normalizedGuess = String(guess || "").toLowerCase();
 
-    // 3. TIE HANDLING: Flipped card becomes new Up Card, player guesses again
-    if (flipped.rank === upCard.rank) {
+    // 1. TIE HANDLING: Flipped card becomes new Up Card, player guesses again
+    if (flipped.rank === upCardRank) {
       return {
         type: "TIE_REGUESS",
         success: true,
         flipped,
-        message: UI_STRINGS["RESULT_TIE"],
+        message: UI_STRINGS.RESULT_TIE,
         endTurn: false,
       };
     }
 
-    // 4. STANDARD RESOLUTION
+    // 2. STANDARD RESOLUTION
     let success = false;
-    if (normalizedGuess === "higher") {
-      success = flipped.rank > upCard.rank;
-    } else if (normalizedGuess === "lower") {
-      success = flipped.rank < upCard.rank;
-    }
+    if (normalizedGuess === "higher") success = flipped.rank > upCardRank;
+    if (normalizedGuess === "lower")  success = flipped.rank < upCardRank;
 
-    // 5. Strict Return Payload matching TurnResult interface
     return {
       type: "RESOLVE",
-      success: success,
+      success,
       flipped,
-      message: success 
-        ? UI_STRINGS["RESULT_CORRECT"] 
-        : UI_STRINGS["RESULT_INCORRECT"],
+      message: success
+        ? UI_STRINGS.RESULT_CORRECT
+        : UI_STRINGS.RESULT_INCORRECT,
       endTurn: true,
     };
   },

@@ -1,28 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
+    // Build target
+    "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
 
-    /* Linting */
+    // Output — disabled during hardening, re-enable for builds
+    "noEmit": true,
+    // "outDir": "./dist",
+    // "rootDir": "./src",
+    "sourceMap": true,
+
+    // Strict foundation — noImplicitAny and strictNullChecks
+    // are already included here, do not list them separately
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+
+    // Hardening flags — add these one at a time per the roadmap
+    // Start with Phase 4.1, fix all errors, then uncomment the next
+    "noUncheckedIndexedAccess": true,   // Phase 4.1
+    // "exactOptionalPropertyTypes": true, // Phase 4.2 — uncomment after 4.1 is clean
+    // "noImplicitReturns": true,          // Phase 4.3 — uncomment after 4.2 is clean
+
+    // Catch real mistakes
+    "skipLibCheck": false
   },
-  "include": ["src"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,33 +1,27 @@
-import { GameMode, UI_STRINGS } from '../types/constants';
-import { GameState, TurnResult, EngineContext, Specialist } from '../types/engine';
-import { Player } from '../types/entities';
-import { Actions } from '../core/Actions';
+import { MODES, UI_STRINGS } from "../constants.js";
+import { Actions } from "../core/Actions.js";
+import type { IGameEngine, Player, GameState, SpecialistResult } from "../types/index.js";
+import type { Specialist } from "./Specialist.js";
 
-// ─────────────────────────────────────────────────────────
-// JACK SHIELD IMPLEMENTATION & CPU AI
-// ─────────────────────────────────────────────────────────
-
-export interface JackShieldSpecialist extends Specialist {
-  shouldCPUPlay: (game: EngineContext, player: Player) => number;
-}
-
-export const JackShield: JackShieldSpecialist = {
+export const JackShield: Omit<Specialist, "execute"> & {
+  shouldCPUPlay(game: IGameEngine, player: Player): number;
+  execute(game: IGameEngine, slotIndex: number): { type: string; success: boolean } | false;
+} = {
   canHandle(state: GameState): boolean {
-    return state.mode === GameMode.Shield;
+    return state.mode === MODES.SHIELD;
   },
 
-  // Prefixing variables with an underscore tells TypeScript we know they are unused
-  resolve(_game: EngineContext, _choice?: string | number): TurnResult | null {
+  resolve(game: IGameEngine, choice: string | number): SpecialistResult {
     return {
       type: "SHIELD_SKIP",
       success: true,
-      flipped: null,
-      message: UI_STRINGS["SHIELD_MESSAGE"],
+      flipped: undefined,
+      message: UI_STRINGS.SHIELD_MESSAGE,
       endTurn: true,
     };
   },
 
-  shouldCPUPlay(game: EngineContext, player: Player): number {
+  shouldCPUPlay(game: IGameEngine, player: Player): number {
     if (!player.hand || player.hand.every((c) => c === null)) return -1;
 
     const jackIndex = player.hand.findIndex((c) => c && c.rank === 11);
@@ -37,49 +31,53 @@ export const JackShield: JackShieldSpecialist = {
 
     const cardCount = player.hand.filter((c) => c !== null).length;
     const activeOpponents = game.players.filter(
-      (p) => !p.isEliminated && p !== player
+      (p) => !p.isEliminated && p !== player,
     );
 
     if (cardCount >= 3) return jackIndex;
 
     if (cardCount === 2) {
       const everyoneElseFull = activeOpponents.every(
-        (p) => p.hand.filter((c) => c !== null).length >= 3
+        (p) => p.hand.filter((c) => c !== null).length >= 3,
       );
       return everyoneElseFull ? -1 : jackIndex;
     }
 
-    return -1; 
+    return -1;
   },
 
-  execute(game: EngineContext, slotIndex: number): TurnResult | null {
+  execute(
+    game: IGameEngine,
+    slotIndex: number,
+  ): { type: string; success: boolean } | false {
     const player = game.players[game.currentPlayerIndex];
     const jack = player.hand[slotIndex];
 
-    if (!jack || jack.rank !== 11) return null; 
+    if (!jack || jack.rank !== 11) return false;
 
+    // 1. THE GREAT RESET: Purge Social/Bounty/Streak contexts
     game.resetState();
 
-    // Changed to rainbow terminology!
-    game.state.rainbowResolved = true;
-    game.state.specialistProcessed = true; 
+    // Block syncGameState from re-arming the Queen/Triple/Lucky7 on the
+    // current Up Card. The Jack overrides whatever mode was active.
+    game.state.socialResolved = true;
+    game.state.specialistProcessed = true;
 
-    if (!game.gameStats.specialists.shield) {
-      game.gameStats.specialists.shield = { total: 0 };
-    }
+    import("../core/SoundManager.js").then(({ SoundManager }) => {
+      SoundManager.play("shield");
+    });
+
     game.gameStats.specialists.shield.total++;
 
+    // 2. Physical Move: Jack becomes the new Up Card via the Commit Gate
+    // This ensures it enters the registry and bakes _strewn metadata
     Actions.commitToDiscard(game, jack);
     player.hand[slotIndex] = null;
 
-    game.state.mode = GameMode.Shield;
+    // 3. Explicitly set state for Director's cinematic phase
+    game.state.mode = MODES.SHIELD;
+    game.state.lastResult = UI_STRINGS.SHIELD_MESSAGE;
 
-    return { 
-      type: "SHIELD_ACTIVATED", 
-      success: true,
-      flipped: null,
-      message: UI_STRINGS["SHIELD_MESSAGE"],
-      endTurn: true
-    };
+    return { type: "SHIELD_ACTIVATED", success: true };
   },
 };

@@ -1,67 +1,59 @@
-import { GameMode, UI_STRINGS } from '../types/constants';
-import { GameState, TurnResult, EngineContext, Specialist } from '../types/engine';
-import { Actions } from '../core/Actions';
-
-// ─────────────────────────────────────────────────────────
-// RAINBOW ROUND IMPLEMENTATION
-// ─────────────────────────────────────────────────────────
+import { MODES, UI_STRINGS } from "../constants.js";
+import { Actions } from "../core/Actions.js";
+import type { IGameEngine, GameState, SpecialistResult } from "../types/index.js";
+import type { Specialist } from "./Specialist.js";
 
 export const Rainbow: Specialist = {
   canHandle(state: GameState): boolean {
-    return state.mode === GameMode.QueenSocial;
+    return state.mode === MODES.QUEEN_SOCIAL;
   },
 
-  resolve(game: EngineContext, choice?: string | number): TurnResult | null {
+  resolve(game: IGameEngine, choice: string | number): SpecialistResult | null {
     const state = game.state;
-    
-    // 1. Execute Draw
     const flipped = Actions.draw(game);
     if (!flipped) return null;
 
-    // 2. Increment round counters safely using new Rainbow terminology
-    state.rainbowRoundCount++;
+    // Increment both counters for this guess attempt
+    state.socialRoundCount++;
     state.currentRoundGuessCount++;
 
     game.recordSpecialistStat("queen", "color_guess");
 
-    // 3. Strict casing normalization (Only colors remain in the game)
-    const safeChoice = String(choice || "").toLowerCase();
+    // Normalize both to lowercase for a case-insensitive comparison.
+    const safeChoice = (choice || "").toString().toLowerCase();
     const isCorrect = flipped.color.toLowerCase() === safeChoice;
 
-    // 4. SUCCESS RESOLUTION
     if (isCorrect) {
       game.recordSpecialistStat("queen", "color_success");
 
-      // Record the length of this completed round safely
+      // Record the length of this completed round
       if (!game.gameStats.specialists.queen.roundLengths) {
         game.gameStats.specialists.queen.roundLengths = [];
       }
       game.gameStats.specialists.queen.roundLengths.push(
-        state.currentRoundGuessCount
+        state.currentRoundGuessCount,
       );
 
-      // Clear round tracking and force state out of Rainbow mode
-      // to ensure the next player is clean
-      state.rainbowActive = false;
-      state.rainbowResolved = true;
+      // Clear round tracking and force state out of Queen Social to ensure the next player is clean
+      state.socialActive = false;
+      state.socialResolved = true;
       state.currentRoundGuessCount = 0;
-      state.mode = GameMode.Normal; 
+      state.mode = MODES.NORMAL;
 
       return {
         success: true,
-        type: "RAINBOW_SUCCESS",
+        type: "QUEEN_SOCIAL_SUCCESS",
         flipped,
-        message: UI_STRINGS["RESULT_CORRECT"],
+        message: UI_STRINGS.RESULT_CORRECT,
         endTurn: true,
       };
     }
 
-    // 5. FAIL RESOLUTION
     return {
       success: false,
-      type: "RAINBOW_FAIL",
+      type: "QUEEN_SOCIAL_FAIL",
       flipped,
-      message: UI_STRINGS["RAINBOW_FAIL"] || UI_STRINGS["RESULT_INCORRECT"],
+      message: UI_STRINGS.RAINBOW_FAIL || UI_STRINGS.RESULT_INCORRECT,
       endTurn: true,
     };
   },
