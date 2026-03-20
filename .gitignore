@@ -1,1 +1,15 @@
+# OS X System Files
+.DS_Store
+**/ .DS_Store
+
+# Dependencies
 node_modules/
+
+# Build and Temp Files
+dist/
+build/
+tsc-errors.txt
+npm-debug.log*
+
+# IDE Settings
+.vscode/
