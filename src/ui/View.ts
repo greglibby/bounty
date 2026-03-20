@@ -451,7 +451,7 @@ export const View = {
         if (isPlayerActive && !isDiscarding && card && !window.isProcessingAction) {
 
           // SURGICAL FIX: Block BOTH 4s and Jacks if the player is mid-streak
-          const inActiveStreak = (mode === MODES.TRIPLE || (mode as string) === "ACE_STREAK") && game.state.streakCount > 0;
+          const inActiveStreak = (mode === MODES.TRIPLE || (mode as string) === "TRIPLE") && game.state.streakCount > 0;
 
           if (!inActiveStreak) {
             if (card.rank === 4 || card.rank === 11) {
@@ -660,7 +660,7 @@ export const View = {
       );
     }
     // Standard Higher/Lower Modes
-    else if ([MODES.NORMAL, MODES.LUCKY_7, MODES.TRIPLE].includes(mode)) {
+    else if (([MODES.NORMAL, MODES.LUCKY_7, MODES.TRIPLE] as string[]).includes(mode as string)) {
       standardRow.style.display = "flex";
     }
   },
@@ -699,6 +699,8 @@ export const View = {
 
     if (card) {
       el.classList.add("filled");
+      el.dataset.rank = String(card.rank);
+      el.dataset.color = card.color;
 
       const mapping: Record<number, string> = { 3: "triple-card", 4: "sabotage-card", 7: "lucky-7-card", 11: "shield-card", 12: "queen-card", 13: "king-card" };
       const mappedClass = mapping[card.rank];
@@ -727,6 +729,8 @@ export const View = {
         }
       }
     } else {
+      delete el.dataset.rank;
+      delete el.dataset.color;
       if (el.innerHTML !== "") {
         el.innerHTML = "";
       }
@@ -741,35 +745,40 @@ export const View = {
     return `images/cards/${color}_${rank}.png`;
   },
 
-  getSuitSymbol(suitName: string): string {
-    const suitKey = suitName.toUpperCase();
-    return SUITS[suitKey]?.symbol || "";
-  },
-
   getRankLabel(rank: number): string | number {
     return RANK_LABELS[rank] || rank;
   },
 
   highlightComboCards(cards: Card[]): void {
-    cards.forEach((card) => {
-      // Find the card element by its rank and suit attributes
-      // This assumes your cards are rendered with data attributes like data-rank="13" data-suit="spades"
-      const cardElements = document.querySelectorAll<HTMLElement>(
-        `.card[data-rank="${card.rank}"][data-suit="${(card as any).suit ?? ""}"]`
-      );
+    // Determine combo type: a flush is 3 cards sharing the same color.
+    // Pairs and straights are identified by rank.
+    const isFlush =
+      cards.length >= 2 &&
+      cards.every((c) => c.color === cards[0]!.color);
 
-      cardElements.forEach((el) => {
-        // Apply the neon green glow styles
-        el.style.transition = "all 0.3s ease-in-out";
-        el.style.transform = "scale(1.15)";
-        el.style.zIndex = "100";
-        el.style.boxShadow = "0 0 30px #39ff14, inset 0 0 15px #39ff14";
-        el.style.borderColor = "#39ff14";
+    const applyGlow = (el: HTMLElement): void => {
+      el.style.transition = "all 0.3s ease-in-out";
+      el.style.transform = "scale(1.15)";
+      el.style.zIndex = "100";
+      el.style.boxShadow = "0 0 30px #39ff14, inset 0 0 15px #39ff14";
+      el.style.borderColor = "#39ff14";
+      el.classList.add("neon-glow");
+    };
 
-        // Optional: Add a class if you have CSS animations defined
-        el.classList.add("neon-glow");
+    if (isFlush) {
+      // Highlight all card-slots whose data-color matches the shared color
+      const color = cards[0]!.color;
+      document
+        .querySelectorAll<HTMLElement>(`.card-slot[data-color="${color}"]`)
+        .forEach(applyGlow);
+    } else {
+      // Highlight by rank for pairs and straights
+      cards.forEach((card) => {
+        document
+          .querySelectorAll<HTMLElement>(`.card-slot[data-rank="${card.rank}"]`)
+          .forEach(applyGlow);
       });
-    });
+    }
   },
 
   showGameOver(message: string, onRestart: () => void): void {

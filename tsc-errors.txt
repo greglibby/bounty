@@ -1,105 +1,65 @@
-src/constants.ts(298,16): error TS2367: This comparison appears to be unintentional because the types '8 | 16 | 19 | 20' and '0' have no overlap.
-src/constants.ts(299,3): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
-  Type 'undefined' is not assignable to type 'string'.
+src/constants.ts(1,22): error TS2307: Cannot find module '../ui/View.js' or its corresponding type declarations.
+src/constants.ts(2,27): error TS2307: Cannot find module '../types/index.js' or its corresponding type declarations.
+src/core/Actions.ts(1,10): error TS2305: Module '"../constants.js"' has no exported member 'STREWN_CONFIG'.
 src/core/Actions.ts(8,8): error TS2322: Type 'T | undefined' is not assignable to type 'T'.
   'T' could be instantiated with an arbitrary type which could be unrelated to 'T | undefined'.
 src/core/Actions.ts(8,18): error TS2322: Type 'T | undefined' is not assignable to type 'T'.
   'T' could be instantiated with an arbitrary type which could be unrelated to 'T | undefined'.
-src/core/Actions.ts(85,9): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/core/Actions.ts(90,9): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
-  Type 'undefined' is not assignable to type 'string'.
 src/core/AnimationManager.ts(174,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
   Type 'undefined' is not assignable to type 'string'.
 src/core/AnimationManager.ts(239,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
   Type 'undefined' is not assignable to type 'string'.
 src/core/AnimationManager.ts(273,42): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
   Type 'undefined' is not assignable to type 'string'.
-src/core/Engine.ts(397,26): error TS2304: Cannot find name 'GameMode'.
+src/core/Engine.ts(2,3): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/core/Engine.ts(3,3): error TS2305: Module '"../constants.js"' has no exported member 'RANKS'.
+src/core/Engine.ts(4,3): error TS2305: Module '"../constants.js"' has no exported member 'DECK_CONFIG'.
+src/core/Engine.ts(5,3): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/core/Engine.ts(6,3): error TS2305: Module '"../constants.js"' has no exported member 'COMBO_RULES'.
+src/core/Engine.ts(7,3): error TS2305: Module '"../constants.js"' has no exported member 'ELIMINATION_CAUSES'.
+src/specialists/JackShield.ts(1,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/JackShield.ts(1,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
 src/specialists/JackShield.ts(54,18): error TS18048: 'player' is possibly 'undefined'.
 src/specialists/JackShield.ts(75,5): error TS18048: 'player' is possibly 'undefined'.
-src/specialists/KingBounty.ts(44,24): error TS18048: 'player' is possibly 'undefined'.
-src/ui/Director.ts(222,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(241,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(249,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(257,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(277,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(291,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(352,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(362,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
+src/specialists/KingBounty.ts(1,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/LuckySeven.ts(6,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/LuckySeven.ts(6,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/specialists/Rainbow.ts(1,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/Rainbow.ts(1,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/specialists/Sabotage.ts(6,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/Sabotage.ts(6,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/specialists/Standard.ts(6,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/Standard.ts(6,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/specialists/Triple.ts(1,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/specialists/Triple.ts(1,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/ui/Director.ts(3,5): error TS2305: Module '"../constants.js"' has no exported member 'TIMING'.
+src/ui/Director.ts(4,5): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/ui/Director.ts(5,5): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/ui/Director.ts(6,5): error TS2305: Module '"../constants.js"' has no exported member 'RANK_LABELS'.
+src/ui/Director.ts(7,5): error TS2305: Module '"../constants.js"' has no exported member 'pickReaction'.
+src/ui/Director.ts(8,5): error TS2305: Module '"../constants.js"' has no exported member 'pickBountyReaction'.
+src/ui/Director.ts(17,10): error TS2305: Module '"../constants.js"' has no exported member 'FormatCard'.
 src/ui/Director.ts(371,19): error TS2322: Type 'Card | undefined' is not assignable to type 'Card'.
   Type 'undefined' is not assignable to type 'Card'.
-src/ui/Director.ts(387,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(415,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(435,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(447,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(474,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(530,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(535,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(565,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(576,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(658,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(701,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(791,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(812,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(815,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(882,33): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(890,29): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(936,37): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(950,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
 src/ui/Director.ts(958,15): error TS2322: Type 'Card | null | undefined' is not assignable to type 'Card | null'.
   Type 'undefined' is not assignable to type 'Card | null'.
-src/ui/Director.ts(992,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
-src/ui/Director.ts(1021,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
 src/ui/Director.ts(1097,45): error TS2532: Object is possibly 'undefined'.
-src/ui/Director.ts(1128,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
 src/ui/Director.ts(1143,17): error TS2353: Object literal may only specify known properties, and 'playerWon' does not exist in type 'GameStats'.
-src/ui/Director.ts(1160,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
+src/ui/InputHandler.ts(4,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/ui/InputHandler.ts(4,17): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/ui/InputHandler.ts(4,29): error TS2305: Module '"../constants.js"' has no exported member 'TIMING'.
 src/ui/InputHandler.ts(342,17): error TS2322: Type 'Card | null | undefined' is not assignable to type 'Card | null'.
   Type 'undefined' is not assignable to type 'Card | null'.
 src/ui/InputHandler.ts(376,17): error TS2322: Type 'Card | null | undefined' is not assignable to type 'Card | null'.
   Type 'undefined' is not assignable to type 'Card | null'.
 src/ui/InputHandler.ts(441,11): error TS2322: Type 'Player | undefined' is not assignable to type 'Player'.
   Type 'undefined' is not assignable to type 'Player'.
-src/ui/InputHandler.ts(492,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
-  Type 'undefined' is not assignable to type 'number'.
 src/ui/InputHandler.ts(530,15): error TS2322: Type 'Card | null | undefined' is not assignable to type 'Card | null'.
   Type 'undefined' is not assignable to type 'Card | null'.
 src/ui/InputHandler.ts(557,15): error TS2322: Type 'Card | null | undefined' is not assignable to type 'Card | null'.
   Type 'undefined' is not assignable to type 'Card | null'.
 src/ui/InputHandler.ts(577,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
   Type 'undefined' is not assignable to type 'string'.
-src/ui/InputHandler.ts(596,19): error TS18048: 'TIMING.THINKING' is possibly 'undefined'.
 src/ui/InputHandler.ts(635,36): error TS2532: Object is possibly 'undefined'.
 src/ui/InputHandler.ts(698,3): error TS2322: Type 'CardColor | undefined' is not assignable to type 'CardColor'.
   Type 'undefined' is not assignable to type 'CardColor'.
@@ -124,5 +84,8 @@ src/ui/InputHandler.ts(863,13): error TS2322: Type 'Player | undefined' is not a
 src/ui/InputHandler.ts(863,30): error TS2539: Cannot assign to 'undefined' because it is not a variable.
 src/ui/InputHandler.ts(873,13): error TS2322: Type 'Player | undefined' is not assignable to type 'Player'.
   Type 'undefined' is not assignable to type 'Player'.
-src/ui/View.ts(663,67): error TS2345: Argument of type 'string' is not assignable to parameter of type '"NORMAL" | "LUCKY_7" | "TRIPLE"'.
-src/ui/View.ts(746,12): error TS2304: Cannot find name 'SUITS'.
+src/ui/View.ts(2,10): error TS2305: Module '"../constants.js"' has no exported member 'MODES'.
+src/ui/View.ts(2,17): error TS2305: Module '"../constants.js"' has no exported member 'RANK_LABELS'.
+src/ui/View.ts(2,30): error TS2305: Module '"../constants.js"' has no exported member 'UI_STRINGS'.
+src/ui/View.ts(2,42): error TS2305: Module '"../constants.js"' has no exported member 'STREWN_CONFIG'.
+src/ui/View.ts(2,57): error TS2305: Module '"../constants.js"' has no exported member 'FormatCard'.
