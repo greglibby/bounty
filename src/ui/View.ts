@@ -2,7 +2,7 @@ import { Director } from "./Director.js";
 import { MODES, RANK_LABELS, UI_STRINGS, STREWN_CONFIG, FormatCard } from "../constants.js";
 import { RecordManager } from "../core/RecordManager.js";
 import { SoundManager } from "../core/SoundManager.js";
-import type { Card, CardColor, GameMode, GameState, Player, GameStats, RankAccuracyStat, IGameEngine } from "../types/index.js";
+import type { Card, CardColor, GameMode, GameState, Player, GameStats, RankAccuracyStat, IGameEngine, StrewnMetadata } from "../types/index.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Window augmentation — runtime flags set by Director / Engine
@@ -10,8 +10,11 @@ import type { Card, CardColor, GameMode, GameState, Player, GameStats, RankAccur
 
 declare global {
   interface Window {
-    isSimulating: boolean;
+    isSimulating?: boolean;
     isProcessingAction: boolean;
+  }
+  interface HTMLElement {
+    _clearTimer?: ReturnType<typeof setTimeout> | null;
   }
 }
 
@@ -40,50 +43,50 @@ interface ViewGame extends Omit<IGameEngine, "state"> {
 
 /** Shape returned by RecordManager.getRecords(). */
 interface SpecialistHighs {
-  ace:      number;
-  lucky7:   number;
-  queen:    number;
-  bounty:   number;
+  ace: number;
+  lucky7: number;
+  queen: number;
+  bounty: number;
   sabotage: number;
-  shield:   number;
+  shield: number;
 }
 
 interface ComboCounts {
-  pair:     number;
+  pair: number;
   straight: number;
-  flush:    number;
+  flush: number;
 }
 
 interface SubStats {
-  aceSuccess:          { attempts: number; success: number };
-  lucky7Success:       { attempts: number; success: number };
-  queenGuessAccuracy:  { attempts: number; success: number };
-  queenRoundLength:    { totalRounds: number; totalGuesses: number; low: number | null; high: number };
-  bountyInstant:       { totalAccepted: number; success: number };
-  bountyDeclined:      { high: number; total: number };
-  sabotageCleared:     { attempts: number; success: number };
+  aceSuccess: { attempts: number; success: number };
+  lucky7Success: { attempts: number; success: number };
+  queenGuessAccuracy: { attempts: number; success: number };
+  queenRoundLength: { totalRounds: number; totalGuesses: number; low: number | null; high: number };
+  bountyInstant: { totalAccepted: number; success: number };
+  bountyDeclined: { high: number; total: number };
+  sabotageCleared: { attempts: number; success: number };
   [key: string]: unknown;
 }
 
 interface GameRecords {
-  longestGameTurns:        number;
-  shortestGameTurns:       number;
-  shortestGameRounds:      number;
-  mostRounds:              number;
-  totalGamesPlayed:        number;
-  gamesWon:                number;
-  totalTurnsAllTime:       number;
-  totalRoundsAllTime:      number;
+  longestGameTurns: number;
+  shortestGameTurns: number;
+  shortestGameRounds: number;
+  mostRounds: number;
+  totalGamesPlayed: number;
+  gamesWon: number;
+  totalTurnsAllTime: number;
+  totalRoundsAllTime: number;
   mostSpecialistsInOneGame: SpecialistHighs;
-  lowSpecialists:          SpecialistHighs;
-  totalSpecialistCounts:   SpecialistHighs;
-  mostCombosInOneGame:     ComboCounts;
-  lowCombosInOneGame:      ComboCounts;
-  totalComboCounts:        ComboCounts;
-  subStats:                SubStats;
-  rankAccuracyAllTime:     Array<{ correct?: number; incorrect?: number }>;
-  eliminationCauses:       Record<string, number>;
-  winMethods:              { LAST_MAN_STANDING: number; BOUNTY_INSTANT: number };
+  lowSpecialists: SpecialistHighs;
+  totalSpecialistCounts: SpecialistHighs;
+  mostCombosInOneGame: ComboCounts;
+  lowCombosInOneGame: ComboCounts;
+  totalComboCounts: ComboCounts;
+  subStats: SubStats;
+  rankAccuracyAllTime: Array<{ correct?: number; incorrect?: number }>;
+  eliminationCauses: Record<string, number>;
+  winMethods: { LAST_MAN_STANDING: number; BOUNTY_INSTANT: number };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -92,7 +95,7 @@ interface GameRecords {
 
 const STREWN_LOOKUP: {
   rotation: Record<number, number>;
-  offset:   Record<string, { x: number; y: number }>;
+  offset: Record<string, { x: number; y: number }>;
 } = {
   rotation: {
     1: -33, // Slightly pushed past -30
@@ -134,7 +137,7 @@ export const View = {
     // 5. REST OF UI
     this.renderPlayers(game.players, game.currentPlayerIndex, game);
     this.renderMessageCenter(game, null, overrideBanner);
-    this.renderControls(game.state.mode, game.players[game.currentPlayerIndex], game.state, game);
+    this.renderControls(game.state.mode, game.players[game.currentPlayerIndex]!, game.state, game);
     this.updateDangerMeter(game);
   },
 
@@ -152,8 +155,8 @@ export const View = {
     const oldTransientId = document.getElementById("transient-card");
     if (oldTransientId) oldTransientId.removeAttribute("id");
 
-    let existingCards = container.querySelectorAll(".strewn-card:not(.transient-card-temp)");
-
+    let existingCards: NodeListOf<Element> | Element[] =
+      container.querySelectorAll(".strewn-card:not(.transient-card-temp)");
     if (history.length < existingCards.length || history.length === 0) {
       container.innerHTML = "";
       existingCards = [];
@@ -162,12 +165,11 @@ export const View = {
     // 2. SMART RENDER: Persistent History
     for (let i = existingCards.length; i < history.length; i++) {
       const card = history[i];
-
+      if (!card) continue;                     // ← add this guard
       if (!card._strewn) {
-        const prevCard = i > 0 ? history[i - 1] : null;
+        const prevCard = i > 0 ? history[i - 1] ?? null : null;  // ← ?? null
         card._strewn = this.generateStrewnMeta(prevCard);
       }
-
       const cardEl = this.createStrewnCardElement(card, i);
       container.appendChild(cardEl);
     }
@@ -209,7 +211,7 @@ export const View = {
     el.className = "card-slot filled strewn-card";
 
     // Z-Index ensures chronological layering
-    el.style.zIndex = index;
+    el.style.zIndex = String(index);
 
     const meta = card._strewn || { rot: 3, offset: "A" };
     const deg = STREWN_LOOKUP.rotation[meta.rot] || 0;
@@ -225,30 +227,28 @@ export const View = {
     return el;
   },
 
- generateStrewnMeta(prevCard: Card | null | undefined): StrewnMeta {
-  // Derive valid keys directly from the lookup object
-  const rotKeys = Object.keys(STREWN_LOOKUP.rotation);
-  const offKeys = Object.keys(STREWN_LOOKUP.offset);
+  generateStrewnMeta(prevCard: Card | null | undefined): StrewnMetadata {
+    const rotKeys = Object.keys(STREWN_LOOKUP.rotation);
+    const offKeys = Object.keys(STREWN_LOOKUP.offset);
 
-  // If first card, return 1A
-  if (!prevCard || !prevCard._strewn) {
-    return { rot: '1', offset: 'A' };
-  }
+    if (!prevCard || !prevCard._strewn) {
+      return { rot: 1, offset: 'A' };          // number literal, not string
+    }
 
-  let rot, offset;
+    let rot: string | undefined;
+    let offset: string | undefined;
 
-  // Pick rotation
-  do {
-    rot = rotKeys[Math.floor(Math.random() * rotKeys.length)];
-  } while (rotKeys.length > 1 && rot === prevCard._strewn.rot);
+    const prevRot = String(prevCard._strewn.rot);   // compare as strings
+    do {
+      rot = rotKeys[Math.floor(Math.random() * rotKeys.length)];
+    } while (rotKeys.length > 1 && rot === prevRot);
 
-  // Pick offset
-  do {
-    offset = offKeys[Math.floor(Math.random() * offKeys.length)];
-  } while (offKeys.length > 1 && offset === prevCard._strewn.offset);
+    do {
+      offset = offKeys[Math.floor(Math.random() * offKeys.length)];
+    } while (offKeys.length > 1 && offset === prevCard._strewn.offset);
 
-  return { rot, offset };
-},
+    return { rot: Number(rot ?? '1'), offset: offset ?? 'A' };
+  },
 
   renderDrawPile(game: ViewGame): void {
     const container = document.getElementById("draw-pile-slot");
@@ -271,17 +271,16 @@ export const View = {
       container.innerHTML = "";
     }
 
-    let img = container.querySelector(".draw-pile-img");
+    let img = container.querySelector<HTMLImageElement>(".draw-pile-img");
     if (!img) {
-      img = document.createElement("img");
-      img.className = "draw-pile-img";
-      img.draggable = false;
-      container.appendChild(img);
+      const newImg = document.createElement("img");
+      newImg.className = "draw-pile-img";
+      newImg.draggable = false;
+      container.appendChild(newImg);
+      img = newImg;
     }
-
-    // THE FIX: Correctly path to the Deck image, avoiding the previous Back.png override
     if (!img.src.endsWith("Deck.png")) {
-      img.src = "images/Cards/Deck.png"; 
+      img.src = "images/Cards/Deck.png";
     }
 
     // 4. SMART RENDER: Update the Badge only if the exact count changed
@@ -293,7 +292,7 @@ export const View = {
     }
 
     if (badge.textContent !== String(count)) {
-      badge.textContent = count;
+      badge.textContent = String(count);
     }
   },
 
@@ -409,7 +408,7 @@ export const View = {
   renderPlayers(players: Player[], activeIndex: number, game: ViewGame): void {
     const mode = game.state.mode;
     const isDiscarding = game.state.mustDiscard.length > 0;
-    const isStandardGuessingMode = [MODES.NORMAL, MODES.LUCKY_7, MODES.TRIPLE, "ACE_STREAK"].includes(mode);
+    const isStandardGuessingMode = (["NORMAL", "LUCKY_7", "TRIPLE", "ACE_STREAK"] as string[]).includes(mode as string);
 
     players.forEach((player, pIdx) => {
       const box = document.getElementById(`player-${pIdx}`);
@@ -427,12 +426,12 @@ export const View = {
         emma: "images/Avatars/Emma.png",
       };
       if (pIdx !== 0) {
-        const avatarImg = box.querySelector(".avatar-img");
+        const avatarImg = box.querySelector<HTMLImageElement>(".avatar-img");
         const key = player.name.trim().toLowerCase();
         if (avatarImg && CPU_AVATARS[key]) avatarImg.src = CPU_AVATARS[key];
       }
 
-      const slots = box.querySelectorAll(".card-slot");
+      const slots = box.querySelectorAll<HTMLElement>(".card-slot");
       slots.forEach((slot, sIdx) => {
         const card = player.hand[sIdx];
         const isPlayerActive = pIdx === activeIndex;
@@ -447,13 +446,13 @@ export const View = {
 
         // --- PLAYABLE LOGIC (Sabotage & Shield) ---
         let isPlayable = false;
-        
+
         // This forces the playable styling to drop the instant a guess is logged
         if (isPlayerActive && !isDiscarding && card && !window.isProcessingAction) {
-          
+
           // SURGICAL FIX: Block BOTH 4s and Jacks if the player is mid-streak
-          const inActiveStreak = (mode === MODES.TRIPLE || mode === "ACE_STREAK") && game.state.streakCount > 0;
-          
+          const inActiveStreak = (mode === MODES.TRIPLE || (mode as string) === "ACE_STREAK") && game.state.streakCount > 0;
+
           if (!inActiveStreak) {
             if (card.rank === 4 || card.rank === 11) {
               isPlayable = true;
@@ -585,7 +584,7 @@ export const View = {
     socialRow.style.display = "none";
     socialRow.innerHTML = "";
 
-    Array.from(standardRow.children).forEach((btn) => btn.blur());
+    Array.from(standardRow.children).forEach((btn) => (btn as HTMLElement).blur());
 
     const human = game.players[0];
 
@@ -687,8 +686,7 @@ export const View = {
     parent.appendChild(btn);
   },
 
-  // Update the signature to accept isPlayable
-  updateSlot(el: Element, card: Card | null | undefined, isDiscardable: boolean = false, isPlayable: boolean = false, game: ViewGame | null = null): void {
+  updateSlot(el: HTMLElement, card: Card | null | undefined, isDiscardable: boolean = false, isPlayable: boolean = false, game: ViewGame | null = null): void {
     if (card && game && game.state.lastFlippedCard === card) {
       card = null;
     }
@@ -703,10 +701,11 @@ export const View = {
       el.classList.add("filled");
 
       const mapping: Record<number, string> = { 3: "triple-card", 4: "sabotage-card", 7: "lucky-7-card", 11: "shield-card", 12: "queen-card", 13: "king-card" };
-      if (mapping[card.rank]) el.classList.add(mapping[card.rank]);
-
+      const mappedClass = mapping[card.rank];
+      if (mappedClass) el.classList.add(mappedClass);
       const newImgPath = this.getCardImagePath(card);
-      const existingImg = el.querySelector(".card-img");
+      const existingImg = el.querySelector<HTMLImageElement>(".card-img");
+
 
       if (existingImg) {
         if (existingImg.getAttribute("src") !== newImgPath) {
@@ -755,8 +754,8 @@ export const View = {
     cards.forEach((card) => {
       // Find the card element by its rank and suit attributes
       // This assumes your cards are rendered with data attributes like data-rank="13" data-suit="spades"
-      const cardElements = document.querySelectorAll(
-        `.card[data-rank="${card.rank}"][data-suit="${card.suit}"]`,
+      const cardElements = document.querySelectorAll<HTMLElement>(
+        `.card[data-rank="${card.rank}"][data-suit="${(card as any).suit ?? ""}"]`
       );
 
       cardElements.forEach((el) => {
@@ -786,17 +785,17 @@ export const View = {
     document.body.appendChild(overlay);
 
     // Add event listener to the new button
-    document.getElementById("restart-btn").onclick = () => {
+    document.getElementById("restart-btn")?.addEventListener("click", () => {
       overlay.remove();
       onRestart(); // This will call your start/initiate function
-    };
+    });
   },
 
   renderStatsOverlay(game: ViewGame): void {
     const stats = game.gameStats;
     const s = stats.specialists;
     const q = s.queen;
-    const humanName = game.players[0].name;
+    const humanName = game.players[0]?.name ?? "PLAYER";
 
     const getPct = (success: number, total: number): number =>
       total > 0 ? Math.round((success / total) * 100) : 0;
@@ -1069,7 +1068,7 @@ export const View = {
   },
 
   renderAllTimeRecordsOverlay(): void {
-    const records = RecordManager.getRecords();
+    const records = RecordManager.getRecords() as unknown as GameRecords;
     const s = records.mostSpecialistsInOneGame;
     const l = records.lowSpecialists;
     const t = records.totalSpecialistCounts;
@@ -1237,7 +1236,7 @@ export const View = {
     });
 
     overlay.onclick = (e) => {
-      const resetBtn = e.target.closest("#btn-reset-records");
+      const resetBtn = (e.target as Element | null)?.closest<HTMLElement>("#btn-reset-records");
 
       if (resetBtn) {
         e.stopPropagation();
@@ -1376,9 +1375,9 @@ export const View = {
 <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">`;
 
     for (let i = 1; i <= 13; i++) {
-      const d = records.rankAccuracyAllTime[i] || {};
-      const correct = d.correct || 0;
-      const incorrect = d.incorrect || 0;
+      const d = records.rankAccuracyAllTime[i];
+      const correct = d?.correct ?? 0;
+      const incorrect = d?.incorrect ?? 0;
       const guesses = correct + incorrect;
 
       const successPct =
@@ -1439,9 +1438,9 @@ export const View = {
       <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">`;
 
     for (let i = 1; i <= 13; i++) {
-      const d = rankAccuracy[i] || {};
-      const correct = d.correct || 0;
-      const incorrect = d.incorrect || 0;
+      const d = rankAccuracy[i];
+      const correct = d?.correct ?? 0;
+      const incorrect = d?.incorrect ?? 0;
       const guesses = correct + incorrect;
 
       if (guesses === 0) continue;
@@ -1536,7 +1535,7 @@ export const View = {
     ];
 
     methods.forEach((m, idx) => {
-      const count = Number(winMethods[m.id]) || 0;
+      const count = Number((winMethods as Record<string, number>)[m.id]) || 0;
       const pct = totalWins > 0 ? Math.round((count / totalWins) * 100) : 0;
       const bg = idx % 2 === 0 ? "rgba(23,107,46,0.06)" : "transparent";
 
@@ -1619,7 +1618,7 @@ export const View = {
     if (!slot) return;
 
     // Target the image directly, just like the wobble does!
-    const img = slot.querySelector('.card-img');
+    const img = slot.querySelector<HTMLElement>('.card-img');
     if (!img) return;
 
     img.style.animation = 'none';
@@ -1631,7 +1630,7 @@ export const View = {
     const slot = document.getElementById("transient-card");
     if (!slot) return;
 
-    const img = slot.querySelector('.card-img');
+    const img = slot.querySelector<HTMLElement>('.card-img');
     if (!img) return;
 
     img.style.animation = 'none';
@@ -1643,7 +1642,7 @@ export const View = {
     const slot = document.getElementById("transient-card");
     if (!slot) return;
 
-    const img = slot.querySelector('.card-img');
+    const img = slot.querySelector<HTMLElement>('.card-img');
     if (!img) return;
 
     img.style.animation = 'none';

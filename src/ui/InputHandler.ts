@@ -329,8 +329,7 @@ const init = (): void => {
 
     // 4. Handle Card Slot Interactions
     if (cardSlot) {
-      const player: Player = game.players[game.currentPlayerIndex];
-      // FIX: Identify the human as the player at index 0
+        const player: Player | undefined = game.players[game.currentPlayerIndex];
       if (!player || game.currentPlayerIndex !== 0) return;
 
       const slotIndex: number = parseInt(cardSlot.dataset.index ?? "", 10);
@@ -756,7 +755,7 @@ const initDebugKeys = (game: InputHandlerGame): void => {
     // --- GIVE SELF RANDOM CARD (Press 'z') ---
     if (e.key.toLowerCase() === "z") {
       console.log("🛠️ Debug: Adding random card to human hand...");
-      const player: Player = game.players[0];
+      const player: Player = undefined = game.players[0];
 
       if (player.hand.filter((c) => c !== null).length < 4) {
         const ranks: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -841,7 +840,7 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE SELF RANK 4 / SABOTAGE (Press '4') ---
     if (e.key === "4") {
-      const player: Player = game.players[0];
+      const player: Player = undefined = game.players[0];
       const emptyIdx: number = player.hand.indexOf(null);
       const debugCard: Card = { rank: 4, color: "Red" };
       if (emptyIdx !== -1) player.hand[emptyIdx] = debugCard;
@@ -861,7 +860,7 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE SELF JACK / SHIELD (Press 'j') ---
     if (e.key.toLowerCase() === "j") {
-      const player: Player = game.players[0];
+      const player: Player = undefined = game.players[0];
       const emptyIdx: number = player.hand.indexOf(null);
       const debugCard: Card = { rank: 11, color: "Blue" };
       if (emptyIdx !== -1) player.hand[emptyIdx] = debugCard;
