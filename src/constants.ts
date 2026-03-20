@@ -100,7 +100,7 @@ export const DECK_CONFIG: {
 // COMBO RULES
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const COMBO_RULES: Record<string, number> = {
+export const COMBO_RULES = {
   MIN_STRAIGHT_LENGTH: 3,
   MIN_FLUSH_LENGTH:    3,
   MAX_HAND_SIZE:       4,
@@ -110,8 +110,7 @@ export const COMBO_RULES: Record<string, number> = {
 // UI STRINGS
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const UI_STRINGS: Record<string, string> = {
-  // Ceremony
+export const UI_STRINGS = {
   CEREMONY_BANNER: "Lowest goes first.",
   CEREMONY_MSG:    "Lowest card goes first",
   SHUFFLING:       "Shuffling deck...",
@@ -247,7 +246,7 @@ export const COLORS: Record<string, string> = {
 
 export const FormatCard = (card: Card | null | undefined): string => {
   if (!card) return "";
-  const rank = RANK_LABELS[card.rank] ?? String(card.rank);
+  const rank: string = RANK_LABELS[card.rank] ?? String(card.rank);
   const colorInitial = card.color ? card.color[0] : "";
   return `${rank}${colorInitial}`;
 };

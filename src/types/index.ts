@@ -50,6 +50,7 @@ export interface EliminationData {
   cause: string;
   finalHand: Card[];
   round: number;
+  matchRank?: number;
 }
 
 export interface PlayerStats {

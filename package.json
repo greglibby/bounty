@@ -1,0 +1,12 @@
+{
+    "name": "bounty",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+      "typecheck": "tsc --noEmit",
+      "typecheck:watch": "tsc --noEmit --watch"
+    },
+    "devDependencies": {
+      "typescript": "^5.4.0"
+    }
+  }

@@ -1,0 +1,146 @@
+src/constants.ts(298,16): error TS2367: This comparison appears to be unintentional because the types '8 | 16 | 19 | 20' and '0' have no overlap.
+src/constants.ts(299,3): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/core/Actions.ts(8,8): error TS2322: Type 'T | undefined' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'T | undefined'.
+src/core/Actions.ts(8,18): error TS2322: Type 'T | undefined' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'T | undefined'.
+src/core/Actions.ts(85,9): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/core/Actions.ts(90,9): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/core/AnimationManager.ts(174,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/core/AnimationManager.ts(239,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/core/AnimationManager.ts(273,42): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/core/Engine.ts(235,5): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(237,5): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(245,20): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(251,20): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(288,20): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(295,9): error TS2322: Type 'false | { type: string; success: boolean; }' is not assignable to type 'GuessResult'.
+  Type '{ type: string; success: boolean; }' is not assignable to type 'GuessResult'.
+    Type '{ type: string; success: boolean; }' is not assignable to type 'SpecialistResult | { type: string; endTurn: boolean; success?: boolean | undefined; }'.
+      Property 'endTurn' is missing in type '{ type: string; success: boolean; }' but required in type '{ type: string; endTurn: boolean; success?: boolean | undefined; }'.
+src/core/Engine.ts(369,50): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(376,14): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(377,28): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(378,32): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(379,16): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(385,26): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.
+  Type 'undefined' is not assignable to type 'Player'.
+src/core/Engine.ts(396,32): error TS2345: Argument of type 'GameMode' is not assignable to parameter of type '"NORMAL" | "LUCKY_7" | "TRIPLE"'.
+  Type '"CEREMONY"' is not assignable to type '"NORMAL" | "LUCKY_7" | "TRIPLE"'.
+src/core/Engine.ts(559,65): error TS18048: 'first' is possibly 'undefined'.
+src/core/Engine.ts(560,65): error TS18048: 'first' is possibly 'undefined'.
+src/core/Engine.ts(565,14): error TS18048: 'first' is possibly 'undefined'.
+src/core/Engine.ts(581,13): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(585,13): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(600,11): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(604,11): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(620,18): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(627,5): error TS18048: 'player' is possibly 'undefined'.
+src/core/Engine.ts(663,29): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.
+  Type 'undefined' is not assignable to type 'Player'.
+src/core/Engine.ts(741,32): error TS2532: Object is possibly 'undefined'.
+src/core/Engine.ts(799,23): error TS18048: 'activePlayer' is possibly 'undefined'.
+src/specialists/JackShield.ts(54,18): error TS18048: 'player' is possibly 'undefined'.
+src/specialists/JackShield.ts(75,5): error TS18048: 'player' is possibly 'undefined'.
+src/specialists/KingBounty.ts(44,24): error TS18048: 'player' is possibly 'undefined'.
+src/specialists/Rainbow.ts(56,27): error TS2339: Property 'RAINBOW_FAIL' does not exist on type '{ CEREMONY_BANNER: string; CEREMONY_MSG: string; SHUFFLING: string; MODE_SUFFIX: string; RESULT_CORRECT: string; RESULT_INCORRECT: string; RESULT_TIE: string; TRIPLE_BANNER: string; TRIPLE_SUCCESS: string; ... 44 more ...; SOUND_OFF: string; }'.
+src/specialists/Sabotage.ts(58,18): error TS18048: 'player' is possibly 'undefined'.
+src/ui/View.ts(1,26): error TS2306: File '/home/greglibby/bounty/src/ui/Director.ts' is not a module.
+src/ui/View.ts(137,42): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.
+  Type 'undefined' is not assignable to type 'Player'.
+src/ui/View.ts(159,7): error TS2741: Property 'item' is missing in type 'never[]' but required in type 'NodeListOf<Element>'.
+src/ui/View.ts(166,12): error TS18048: 'card' is possibly 'undefined'.
+src/ui/View.ts(168,9): error TS18048: 'card' is possibly 'undefined'.
+src/ui/View.ts(168,9): error TS2322: Type 'StrewnMeta' is not assignable to type 'StrewnMetadata'.
+  Types of property 'rot' are incompatible.
+    Type 'string | number' is not assignable to type 'number'.
+      Type 'string' is not assignable to type 'number'.
+src/ui/View.ts(171,51): error TS2345: Argument of type 'Card | undefined' is not assignable to parameter of type 'Card'.
+  Type 'undefined' is not assignable to type 'Card'.
+src/ui/View.ts(191,11): error TS2322: Type 'StrewnMeta' is not assignable to type 'StrewnMetadata'.
+  Types of property 'rot' are incompatible.
+    Type 'string | number' is not assignable to type 'number'.
+      Type 'string' is not assignable to type 'number'.
+src/ui/View.ts(212,5): error TS2322: Type 'number' is not assignable to type 'string'.
+src/ui/View.ts(243,34): error TS2367: This comparison appears to be unintentional because the types 'string | undefined' and 'number' have no overlap.
+src/ui/View.ts(250,12): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/ui/View.ts(250,17): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/ui/View.ts(278,11): error TS2339: Property 'draggable' does not exist on type 'Element'.
+src/ui/View.ts(283,14): error TS2339: Property 'src' does not exist on type 'Element'.
+src/ui/View.ts(284,11): error TS2339: Property 'src' does not exist on type 'Element'.
+src/ui/View.ts(296,7): error TS2322: Type 'number' is not assignable to type 'string'.
+src/ui/View.ts(432,54): error TS2339: Property 'src' does not exist on type 'Element'.
+src/ui/View.ts(455,60): error TS2367: This comparison appears to be unintentional because the types '"CEREMONY" | "NORMAL" | "DISCARD" | "QUEEN_SOCIAL" | "KING_BOUNTY" | "LUCKY_7" | "SABOTAGE" | "SHIELD" | "GAME_OVER"' and '"ACE_STREAK"' have no overlap.
+src/ui/View.ts(588,59): error TS2339: Property 'blur' does not exist on type 'Element'.
+src/ui/View.ts(664,67): error TS2345: Argument of type 'string' is not assignable to parameter of type '"NORMAL" | "LUCKY_7" | "TRIPLE"'.
+src/ui/View.ts(700,8): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(706,48): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/ui/View.ts(713,23): error TS2339: Property 'src' does not exist on type 'Element'.
+src/ui/View.ts(747,12): error TS2304: Cannot find name 'SUITS'.
+src/ui/View.ts(759,60): error TS2339: Property 'suit' does not exist on type 'Card'.
+src/ui/View.ts(764,12): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(765,12): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(766,12): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(767,12): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(768,12): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(789,5): error TS2531: Object is possibly 'null'.
+src/ui/View.ts(799,23): error TS2532: Object is possibly 'undefined'.
+src/ui/View.ts(973,29): error TS2339: Property 'matchRank' does not exist on type 'EliminationData'.
+src/ui/View.ts(1089,20): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ aceSuccess: SubStatEntry; lucky7Success: SubStatEntry; queenGuessAccuracy: SubStatEntry; queenRoundLength: QueenRoundLengthStat; bountyDeclined: BountyDeclinedStat; bountyInstant: BountyInstantStat; sabotageCleared: SubStatEntry; }'.
+  No index signature with a parameter of type 'string' was found on type '{ aceSuccess: SubStatEntry; lucky7Success: SubStatEntry; queenGuessAccuracy: SubStatEntry; queenRoundLength: QueenRoundLengthStat; bountyDeclined: BountyDeclinedStat; bountyInstant: BountyInstantStat; sabotageCleared: SubStatEntry; }'.
+src/ui/View.ts(1181,90): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1183,98): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1185,97): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1188,106): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1191,102): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1193,98): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1205,97): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1206,105): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1207,100): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/ui/View.ts(1210,36): error TS2345: Argument of type 'AllTimeRecords' is not assignable to parameter of type 'GameRecords'.
+  Types of property 'mostSpecialistsInOneGame' are incompatible.
+    Type 'Record<string, number>' is missing the following properties from type 'SpecialistHighs': ace, lucky7, queen, bounty, and 2 more.
+src/ui/View.ts(1211,37): error TS2345: Argument of type 'AllTimeRecords' is not assignable to parameter of type 'GameRecords'.
+  Types of property 'mostSpecialistsInOneGame' are incompatible.
+    Type 'Record<string, number>' is missing the following properties from type 'SpecialistHighs': ace, lucky7, queen, bounty, and 2 more.
+src/ui/View.ts(1240,24): error TS18047: 'e.target' is possibly 'null'.
+src/ui/View.ts(1240,33): error TS2339: Property 'closest' does not exist on type 'EventTarget'.
+src/ui/View.ts(1443,25): error TS2339: Property 'correct' does not exist on type '{}'.
+src/ui/View.ts(1444,27): error TS2339: Property 'incorrect' does not exist on type '{}'.
+src/ui/View.ts(1539,28): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ LAST_MAN_STANDING: number; BOUNTY_INSTANT: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ LAST_MAN_STANDING: number; BOUNTY_INSTANT: number; }'.
+src/ui/View.ts(1570,16): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1571,27): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1572,14): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1579,14): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1585,16): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1596,16): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1597,27): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1598,14): error TS2339: Property '_clearTimer' does not exist on type 'HTMLElement'.
+src/ui/View.ts(1625,9): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(1626,14): error TS2339: Property 'offsetWidth' does not exist on type 'Element'.
+src/ui/View.ts(1627,9): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(1637,9): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(1638,14): error TS2339: Property 'offsetWidth' does not exist on type 'Element'.
+src/ui/View.ts(1639,9): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(1649,9): error TS2339: Property 'style' does not exist on type 'Element'.
+src/ui/View.ts(1650,14): error TS2339: Property 'offsetWidth' does not exist on type 'Element'.
+src/ui/View.ts(1651,9): error TS2339: Property 'style' does not exist on type 'Element'.

@@ -85,22 +85,25 @@ export class BountyEngine implements IGameEngine {
     // set at runtime — omitted here and cast so the object satisfies GameState.
     this.state = {
       mode: MODES.NORMAL,
-      socialTheme: null,
-      socialRoundCount: 0,
-      socialOriginator: -1,
-      socialActive: false,
-      socialResolved: false,
-      currentRoundGuessCount: 0,
       lastResult: "",
       isCeremony: false,
       gameOver: false,
+      winner: null,              // ← add
+      bountyWinningCard: null,   // ← add
+      specialistProcessed: false, // ← add
       mustDiscard: [],
-      streakCount: 0,
-      turnCount: 1,
-      roundCount: 1,
+      socialActive: false,
+      socialResolved: false,
+      socialTheme: null,
+      socialOriginator: 0,
+      socialRoundCount: 0,
+      currentRoundGuessCount: 0,
       pendingSabotage: false,
       bountyProcessed: false,
-    } as GameState;
+      streakCount: 0,
+      turnCount: 0,
+      roundCount: 0,
+    };
 
     // JackShield and KingBounty satisfy the canHandle/resolve contract but
     // have extended execute signatures; cast them in for the Specialist array.
@@ -156,55 +159,34 @@ export class BountyEngine implements IGameEngine {
   // ─────────────────────────────────────────────────────────────────────────
 
   recordSpecialistStat(type: string, result: string): void {
-    // 0. TIE HANDLING: New stat for discards resulting from rank ties
-    if (type === "tie") {
-      if (result === "discard") {
-        this.gameStats.tiesWithDiscard = (this.gameStats.tiesWithDiscard || 0) + 1;
-      }
-      return;
-    }
-
-    const stats = this.gameStats.specialists;
-    // Dynamic key lookup — use Record cast to keep strict typing elsewhere.
-    const s = (stats as Record<string, Record<string, number> & { roundLengths?: number[] }>)[type];
-    if (!s) return;
-
-    // 1. DENOMINATOR (TOTAL) HANDLING:
-    // Ensure "trigger" only increments total once.
-    if (result === "trigger") {
-      s.total++;
-      return;
-    }
-
-    // 2. QUEEN HANDLING: Color guess accuracy only
-    if (type === "queen") {
-      if (result === "color_guess")    s.colorTotal++;
-      else if (result === "color_success") s.colorSuccess++;
-      return;
-    }
-
-    // 3. BOUNTY HANDLING
-    else if (type === "bounty") {
-      if (result === "accepted") s.accepted++;
-      else if (result === "win") s.instantWins++;
-    }
-
-    // 4. SABOTAGE HANDLING
-    else if (type === "sabotage") {
-      if (result === "fail")    s.victimsFailed++;
-      else if (result === "success") s.success++;
-    }
-
-    // 5. STREAK & LUCKY 7 SUCCESS HANDLING
-    // Note: Denominators for these are now handled exclusively by the "trigger" result
-    // called in syncGameState when streakCount === 0 or !specialistProcessed.
-    else if (type === "ace" || type === "lucky7") {
-      if (result === "success") s.success++;
-    }
-
-    // Fallback for any other specialists (Shield, etc.)
-    else {
-      if (result === "success") s.success++;
+    const s = this.gameStats.specialists;
+    switch (type) {
+      case "bounty":
+        s.bounty.total++;
+        if (result === "accepted") s.bounty.accepted++;
+        if (result === "win")      s.bounty.instantWins++;
+        break;
+      case "lucky7":
+        s.lucky7.total++;
+        if (result === "success")  s.lucky7.success++;
+        break;
+      case "sabotage":
+        s.sabotage.total++;
+        if (result === "fail")     s.sabotage.victimsFailed++;
+        if (result === "success")  s.sabotage.success++;
+        break;
+      case "queen":
+        s.queen.total++;
+        if (result === "color_round")   s.queen.colorTotal++;
+        if (result === "color_success") s.queen.colorSuccess++;
+        break;
+      case "ace":
+        s.ace.total++;
+        if (result === "success")  s.ace.success++;
+        break;
+      case "shield":
+        s.shield.total++;
+        break;
     }
   }
 

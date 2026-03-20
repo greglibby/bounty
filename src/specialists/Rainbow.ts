@@ -53,7 +53,7 @@ export const Rainbow: Specialist = {
       success: false,
       type: "QUEEN_SOCIAL_FAIL",
       flipped,
-      message: UI_STRINGS.RAINBOW_FAIL || UI_STRINGS.RESULT_INCORRECT,
+      message: UI_STRINGS.RESULT_INCORRECT,
       endTurn: true,
     };
   },
