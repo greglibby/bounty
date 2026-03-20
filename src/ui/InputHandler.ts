@@ -339,7 +339,7 @@ const init = (): void => {
       if (game.state.mustDiscard.length > 0) {
         if (cardSlot.classList.contains("discardable")) {
           // 1. Capture the card object BEFORE the engine removes it from the hand
-          const cardToDiscard: Card | null = player.hand[slotIndex];
+          const cardToDiscard: Card | null = player.hand[slotIndex] ?? null;
 
           if (game.processDiscard(slotIndex)) {
             // 2. Hand over control to Director for the FLIP animation sequence
@@ -373,7 +373,7 @@ const init = (): void => {
           const startRect: DOMRect | null = img
             ? img.getBoundingClientRect()
             : null;
-          const cardObj: Card | null = player.hand[slotIndex];
+          const cardObj: Card | null = player.hand[slotIndex] ?? null;
 
           // 2. Fire the Director action (which places the card in the pile)
           const actionPromise: Promise<void> = Director.handleHandAction(
@@ -438,7 +438,7 @@ export async function playCPUTurns(): Promise<void> {
   game.isCPULoopRunning = true;
 
   while (game && !game.state.gameOver) {
-    const player: Player = game.players[game.currentPlayerIndex];
+    const player: Player | undefined = game.players[game.currentPlayerIndex];
 
     // 1. Safety Guard for eliminated players or invalid turns
     if (!player || player.isEliminated) {
@@ -527,7 +527,7 @@ export async function playCPUTurns(): Promise<void> {
         const startRect: DOMRect | null = slot
           ? slot.getBoundingClientRect()
           : null;
-        const cardObj: Card | null = player.hand[sabotageIdx];
+        const cardObj: Card | null = player.hand[sabotageIdx] ?? null;
 
         const actionPromise: Promise<void> = Director.handleHandAction(
           game,
@@ -554,7 +554,7 @@ export async function playCPUTurns(): Promise<void> {
         const startRect: DOMRect | null = slot
           ? slot.getBoundingClientRect()
           : null;
-        const cardObj: Card | null = player.hand[shieldIdx];
+        const cardObj: Card | null = player.hand[shieldIdx] ?? null;
 
         const actionPromise: Promise<void> = Director.handleHandAction(
           game,
@@ -574,7 +574,7 @@ export async function playCPUTurns(): Promise<void> {
     // 5. MODE LOGIC: Identify the correct "Button" to push via Specialist Logic
     if (mode === MODES.SABOTAGE) {
       const colors: CardColor[] = ["Yellow", "Red", "Blue", "Green"];
-      strategicChoice = colors[Math.floor(Math.random() * colors.length)];
+      strategicChoice = colors[Math.floor(Math.random() * colors.length)]!;
     } else if (mode === MODES.QUEEN_SOCIAL) {
       strategicChoice = getCPUSocialChoice();
     } else if (mode === MODES.KING_BOUNTY) {
@@ -632,7 +632,7 @@ function evaluateCPUBounty(game: InputHandlerGame, player: Player): string {
   // Strategy for 3 cards: Do not accept unless 1 player left and they have a 4
   if (hand.length === 3) {
     if (others.length === 1) {
-      const hasSabotage: boolean = others[0].hand.some((c) => c?.rank === 4);
+      const hasSabotage: boolean = others[0]?.hand.some((c) => c?.rank === 4) ?? false;
       return hasSabotage ? "ACCEPT" : "DECLINE";
     }
     return "DECLINE";
@@ -695,7 +695,7 @@ function getCPUStandardGuess(rank: number): string {
 
 function getCPUSocialChoice(): CardColor {
   const colors: CardColor[] = ["Yellow", "Red", "Blue", "Green"];
-  return colors[Math.floor(Math.random() * colors.length)];
+  return colors[Math.floor(Math.random() * colors.length)]!;
 }
 
 // =============================================================================
@@ -755,14 +755,15 @@ const initDebugKeys = (game: InputHandlerGame): void => {
     // --- GIVE SELF RANDOM CARD (Press 'z') ---
     if (e.key.toLowerCase() === "z") {
       console.log("🛠️ Debug: Adding random card to human hand...");
-      const player: Player = undefined = game.players[0];
+      const player = game.players[0];
+      if (!player) return;
 
       if (player.hand.filter((c) => c !== null).length < 4) {
         const ranks: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
         const colors: CardColor[] = ["Red", "Blue", "Green", "Yellow"];
         const randomCard: Card = {
-          rank: ranks[Math.floor(Math.random() * ranks.length)],
-          color: colors[Math.floor(Math.random() * colors.length)],
+          rank: ranks[Math.floor(Math.random() * ranks.length)]!,
+          color: colors[Math.floor(Math.random() * colors.length)]!,
         };
 
         const emptyIdx: number = player.hand.indexOf(null);
@@ -827,8 +828,8 @@ const initDebugKeys = (game: InputHandlerGame): void => {
           const ranks: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
           const colors: CardColor[] = ["Red", "Blue", "Green", "Yellow"];
           const randomCard: Card = {
-            rank: ranks[Math.floor(Math.random() * ranks.length)],
-            color: colors[Math.floor(Math.random() * colors.length)],
+            rank: ranks[Math.floor(Math.random() * ranks.length)]!,
+            color: colors[Math.floor(Math.random() * colors.length)]!,
           };
           const emptyIdx: number = player.hand.indexOf(null);
           if (emptyIdx !== -1) player.hand[emptyIdx] = randomCard;
@@ -840,7 +841,8 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE SELF RANK 4 / SABOTAGE (Press '4') ---
     if (e.key === "4") {
-      const player: Player = undefined = game.players[0];
+      const player = game.players[0];
+      if (!player) return;
       const emptyIdx: number = player.hand.indexOf(null);
       const debugCard: Card = { rank: 4, color: "Red" };
       if (emptyIdx !== -1) player.hand[emptyIdx] = debugCard;
@@ -850,7 +852,8 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE EMMA RANK 4 / SABOTAGE (Press '5') ---
     if (e.key === "5") {
-      const emma: Player = game.players[3];
+      const emma = game.players[3];
+      if (!emma) return;
       const emptyIdx: number = emma.hand.indexOf(null);
       const debugCard: Card = { rank: 4, color: "Green" };
       if (emptyIdx !== -1) emma.hand[emptyIdx] = debugCard;
@@ -860,7 +863,8 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE SELF JACK / SHIELD (Press 'j') ---
     if (e.key.toLowerCase() === "j") {
-      const player: Player = undefined = game.players[0];
+      const player = game.players[0];
+      if (!player) return;
       const emptyIdx: number = player.hand.indexOf(null);
       const debugCard: Card = { rank: 11, color: "Blue" };
       if (emptyIdx !== -1) player.hand[emptyIdx] = debugCard;
@@ -870,7 +874,8 @@ const initDebugKeys = (game: InputHandlerGame): void => {
 
     // --- GIVE EMMA JACK / SHIELD (Press 'k') ---
     if (e.key.toLowerCase() === "k") {
-      const emma: Player = game.players[3];
+      const emma = game.players[3];
+      if (!emma) return;
       const emptyIdx: number = emma.hand.indexOf(null);
       const debugCard: Card = { rank: 11, color: "Yellow" };
       if (emptyIdx !== -1) emma.hand[emptyIdx] = debugCard;

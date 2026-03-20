@@ -51,6 +51,7 @@ export const JackShield: Omit<Specialist, "execute"> & {
     slotIndex: number,
   ): { type: string; success: boolean } | false {
     const player = game.players[game.currentPlayerIndex];
+    if (!player) return false;
     const jack = player.hand[slotIndex];
 
     if (!jack || jack.rank !== 11) return false;

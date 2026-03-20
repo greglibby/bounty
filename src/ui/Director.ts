@@ -368,7 +368,7 @@ export const Director = {
             this.logMessage(game, UI_STRINGS.SHUFFLING);
 
             // FIX: Isolate the Up Card so it remains visible during shuffle
-            const topCard: Card = game.discardPile[game.discardPile.length - 1];
+            const topCard: Card = game.discardPile[game.discardPile.length - 1]!;
             const remainingDiscards: Card[] = game.discardPile.slice(0, -1);
 
             game.discardPile = [topCard];
@@ -955,7 +955,7 @@ export const Director = {
         slotIndex: number,
         player: Player
     ): Promise<void> {
-        const cardToPlay: Card | null = player.hand[slotIndex];
+        const cardToPlay: Card | null = player.hand[slotIndex] ?? null;
         if (!cardToPlay) return;
 
         const isSabotage: boolean = cardToPlay.rank === 4;
@@ -1094,9 +1094,9 @@ export const Director = {
             !game.state.gameOver
         ) {
             if (game.state.mode === MODES.KING_BOUNTY) {
-                const activeCards: number = game.players[0].hand.filter(
+                const activeCards: number = game.players[0]?.hand.filter(
                     (c) => c !== null,
-                ).length;
+                ).length ?? 0;
                 View.showBubble(0, pickBountyReaction(activeCards), true);
             } else if (
                 game.state.mode === MODES.SABOTAGE &&
@@ -1139,9 +1139,9 @@ export const Director = {
 
             RecordManager.updateRecords({
                 ...game.gameStats,
-                winMethod: finalWinMethod, // Ensure this is passed
+                winMethod: finalWinMethod,
                 playerWon: isWinner,
-            });
+            } as unknown as typeof game.gameStats);
 
             document.body.classList.add("game-over");
             window.isProcessingAction = true;

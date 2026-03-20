@@ -171,7 +171,8 @@ export const AnimationManager = {
 
       const transformStr = (targetCard as HTMLElement).style.transform;
       const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
-      if (rotateMatch) endRot = parseFloat(rotateMatch[1]);
+      // Group 1 is guaranteed defined when the match succeeds
+      if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
     } else {
       endRect = discardSlot.getBoundingClientRect();
       targetWidth = discardSlot.offsetWidth;
@@ -236,7 +237,8 @@ export const AnimationManager = {
         (targetImg as HTMLElement);
       const transformStr = targetParent ? targetParent.style.transform : "";
       const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
-      if (rotateMatch) endRot = parseFloat(rotateMatch[1]);
+      // Group 1 is guaranteed defined when the match succeeds
+      if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
 
       // Hide physical target
       targetParent.style.opacity = "0";
@@ -270,7 +272,8 @@ export const AnimationManager = {
     let endRot = 0;
     const transformStr = targetCard.style.transform;
     const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
-    if (rotateMatch) endRot = parseFloat(rotateMatch[1]);
+    // Group 1 is guaranteed defined when the match succeeds
+    if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
 
     // Hide physical target
     targetCard.style.opacity = "0";

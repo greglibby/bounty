@@ -5,7 +5,7 @@ export const Actions = {
   shuffle<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [array[i], array[j]] = [array[j]!, array[i]!];
     }
     return array;
   },
@@ -82,12 +82,12 @@ export const Actions = {
       // --- THE FIX: DYNAMIC ARRAY LENGTHS ---
       // Constraint 1: Rotation index cannot match the previous card
       do {
-        newRot = rots[Math.floor(Math.random() * rots.length)];
+        newRot = rots[Math.floor(Math.random() * rots.length)]!;
       } while (newRot === prevRot);
 
       // Constraint 2: Offset letter cannot match the previous card
       do {
-        newOffset = offs[Math.floor(Math.random() * offs.length)];
+        newOffset = offs[Math.floor(Math.random() * offs.length)]!;
       } while (newOffset === prevOff);
 
       card._strewn = { rot: newRot, offset: newOffset };
