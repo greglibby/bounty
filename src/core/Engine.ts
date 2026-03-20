@@ -71,12 +71,12 @@ export class BountyEngine implements IGameEngine {
         total: 0,
       })),
       specialists: {
-        ace:      { total: 0, success: 0 },
-        lucky7:   { total: 0, success: 0 },
-        queen:    { total: 0, colorTotal: 0, colorSuccess: 0, roundLengths: [] },
-        bounty:   { total: 0, accepted: 0, instantWins: 0 },
+        ace: { total: 0, success: 0 },
+        lucky7: { total: 0, success: 0 },
+        queen: { total: 0, colorTotal: 0, colorSuccess: 0, roundLengths: [] },
+        bounty: { total: 0, accepted: 0, instantWins: 0 },
         sabotage: { total: 0, victimsFailed: 0, success: 0 },
-        shield:   { total: 0 },
+        shield: { total: 0 },
       },
       combos: { pair: 0, straight: 0, flush: 0 },
     };
@@ -138,9 +138,9 @@ export class BountyEngine implements IGameEngine {
 
   getSpecialistClass(rank: number): string | null {
     const mapping: Partial<Record<number, string>> = {
-      3:  "triple-card",
-      4:  "sabotage-card",
-      7:  "lucky-7-card",
+      3: "triple-card",
+      4: "sabotage-card",
+      7: "lucky-7-card",
       11: "shield-card",
       12: "queen-card",
       13: "king-card",
@@ -164,25 +164,25 @@ export class BountyEngine implements IGameEngine {
       case "bounty":
         s.bounty.total++;
         if (result === "accepted") s.bounty.accepted++;
-        if (result === "win")      s.bounty.instantWins++;
+        if (result === "win") s.bounty.instantWins++;
         break;
       case "lucky7":
         s.lucky7.total++;
-        if (result === "success")  s.lucky7.success++;
+        if (result === "success") s.lucky7.success++;
         break;
       case "sabotage":
         s.sabotage.total++;
-        if (result === "fail")     s.sabotage.victimsFailed++;
-        if (result === "success")  s.sabotage.success++;
+        if (result === "fail") s.sabotage.victimsFailed++;
+        if (result === "success") s.sabotage.success++;
         break;
       case "queen":
         s.queen.total++;
-        if (result === "color_round")   s.queen.colorTotal++;
+        if (result === "color_round") s.queen.colorTotal++;
         if (result === "color_success") s.queen.colorSuccess++;
         break;
       case "ace":
         s.ace.total++;
-        if (result === "success")  s.ace.success++;
+        if (result === "success") s.ace.success++;
         break;
       case "shield":
         s.shield.total++;
@@ -231,10 +231,10 @@ export class BountyEngine implements IGameEngine {
       );
       return;
     }
-    // Ensure the card is assigned to the ceremonyCard property
-    this.players[playerIdx].ceremonyCard = card;
-    // Also put it in the hand so the View can render it
-    this.players[playerIdx].hand = [card];
+    const p = this.players[playerIdx];
+    if (!p) return;
+    p.ceremonyCard = card;
+    p.hand = [card];
   }
 
   evaluateCeremonyRound(playerIndices: number[]): { survivors: number[]; isTie: boolean } {
@@ -242,13 +242,13 @@ export class BountyEngine implements IGameEngine {
 
     // 1. Find the actual minimum rank among valid cards
     playerIndices.forEach((idx) => {
-      const card = this.players[idx].ceremonyCard;
+      const card = this.players[idx]?.ceremonyCard;
       if (card && card.rank < minRank) minRank = card.rank;
     });
 
     // 2. Filter survivors who match that minimum rank
     const survivors = playerIndices.filter((idx) => {
-      const card = this.players[idx].ceremonyCard;
+      const card = this.players[idx]?.ceremonyCard;
       return card && card.rank === minRank;
     });
 
@@ -285,6 +285,7 @@ export class BountyEngine implements IGameEngine {
     // 1. Check if the choice is a slot index (Hand Action - Jack or 4)
     if (typeof choice === "number") {
       const player = this.players[this.currentPlayerIndex];
+      if (!player) return null;
       const card = player.hand[choice];
 
       // PRIORITIZE HAND ACTIONS: Jacks and 4s break out of any mode (Social, Bounty, etc.)
@@ -292,7 +293,7 @@ export class BountyEngine implements IGameEngine {
         return Sabotage.execute!(this, choice);
       }
       if (card && card.rank === 11) {
-        return JackShield.execute(this, choice);
+        return JackShield.execute(this, choice) as GuessResult;
       }
 
       // If it wasn't a 4 or J, but we are in Social Mode, let the specialist handle it
@@ -351,6 +352,7 @@ export class BountyEngine implements IGameEngine {
 
   applyResult(result: SpecialistResult): void {
     const player = this.players[this.currentPlayerIndex];
+    if (!player) return;
 
     // --- FIX: Capture the target rank BEFORE the upCard is updated ---
     // This ensures we record the stat against the card being guessed ON, not the new flip.
@@ -392,7 +394,7 @@ export class BountyEngine implements IGameEngine {
     }
 
     // --- FIXED: RANK ACCURACY TRACKING (Using targetRank) ---
-    const accuracyModes = [MODES.NORMAL, MODES.TRIPLE, MODES.LUCKY_7];
+    const accuracyModes: GameMode[] = [MODES.NORMAL, MODES.TRIPLE, MODES.LUCKY_7];
     if (accuracyModes.includes(this.state.mode) && targetRank !== null) {
       const r = targetRank;
 
@@ -555,9 +557,10 @@ export class BountyEngine implements IGameEngine {
     if (activeHand.length >= COMBO_RULES.MIN_STRAIGHT_LENGTH) {
       const sorted = [...activeHand].sort((a, b) => a.card.rank - b.card.rank);
       for (let i = 0; i <= sorted.length - 1; i++) {
-        const first  = sorted[i];
+        const first = sorted[i];
+        if (!first) continue;
         const second = sorted.find((item) => item.card.rank === first.card.rank + 1);
-        const third  = sorted.find((item) => item.card.rank === first.card.rank + 2);
+        const third = sorted.find((item) => item.card.rank === first.card.rank + 2);
         if (second && third) {
           this.recordCombo("straight");
           this.state.mode = MODES.DISCARD;
@@ -578,11 +581,13 @@ export class BountyEngine implements IGameEngine {
         colorGroups[c].push(item.index);
       });
       for (const color in colorGroups) {
-        if (colorGroups[color].length >= 3) {
+        const cGroup = colorGroups[color];
+        if (!cGroup) continue;
+        if (cGroup.length >= 3) {
           this.recordCombo("flush");
           this.state.mode = MODES.DISCARD;
           return this.setDiscardRequirement(
-            colorGroups[color].slice(0, 3),
+            cGroup.slice(0, 3),
             UI_STRINGS.COMBO_FLUSH,
           );
         }
@@ -597,11 +602,13 @@ export class BountyEngine implements IGameEngine {
       counts[r].push(item.index);
     });
     for (const rank in counts) {
-      if (counts[rank].length >= 2) {
+      const pGroup = counts[rank];
+      if (!pGroup) continue;
+      if (pGroup.length >= 2) {
         this.recordCombo("pair");
         this.state.mode = MODES.DISCARD;
         return this.setDiscardRequirement(
-          counts[rank].slice(0, 2),
+          pGroup.slice(0, 2),
           UI_STRINGS.COMBO_PAIR,
         );
       }
@@ -617,6 +624,7 @@ export class BountyEngine implements IGameEngine {
 
   executePhysicalDiscard(cardIndex: number): Card | null {
     const player = this.players[this.currentPlayerIndex];
+    if (!player) return null;
     const card = player.hand[cardIndex];
 
     if (!card) return null;
@@ -634,7 +642,8 @@ export class BountyEngine implements IGameEngine {
 
   processDiscard(cardIndex: number): Card | null {
     const player = this.players[this.currentPlayerIndex];
-    const isWildcard      = this.state.mustDiscard.includes(-1);
+    if (!player) return null;
+    const isWildcard = this.state.mustDiscard.includes(-1);
     const isRequiredIndex = this.state.mustDiscard.includes(cardIndex);
 
     if (!isRequiredIndex && !isWildcard) return null;
@@ -689,10 +698,10 @@ export class BountyEngine implements IGameEngine {
 
       // Keep the "Friendly Name" for the UI Player Table
       player.eliminationData = {
-        outOrder:  this.gameStats.eliminationSequence.length,
-        cause:     ELIMINATION_CAUSES[rawCause] || rawCause,
+        outOrder: this.gameStats.eliminationSequence.length,
+        cause: ELIMINATION_CAUSES[rawCause] || rawCause,
         finalHand: [...player.hand.filter((c): c is Card => c !== null)],
-        round:     this.gameStats.totalRounds,
+        round: this.gameStats.totalRounds,
       };
 
       const survivors = this.players.filter((p) => !p.isEliminated);
@@ -738,8 +747,10 @@ export class BountyEngine implements IGameEngine {
 
     // 2. UNIFIED TURN ROTATION
     let nextIdx = (this.currentPlayerIndex + 1) % players.length;
-    while (players[nextIdx] && players[nextIdx].isEliminated) {
+    let nextPlayer = players[nextIdx];
+    while (nextPlayer && nextPlayer.isEliminated) {
       nextIdx = (nextIdx + 1) % players.length;
+      nextPlayer = players[nextIdx];
     }
 
     this.currentPlayerIndex = nextIdx;
@@ -752,21 +763,21 @@ export class BountyEngine implements IGameEngine {
 
   resetState(): void {
     // 1. Core Mode Reset
-    this.state.mode           = MODES.NORMAL;
-    this.state.winner         = null;
-    this.state.gameOver       = false;
+    this.state.mode = MODES.NORMAL;
+    this.state.winner = null;
+    this.state.gameOver = false;
     this.state.bountyWinningCard = null;
 
     // 2. Queen Social Purge
-    this.state.socialActive          = false;
-    this.state.socialResolved        = false;
-    this.state.socialRoundCount      = 0;
+    this.state.socialActive = false;
+    this.state.socialResolved = false;
+    this.state.socialRoundCount = 0;
     this.state.currentRoundGuessCount = 0;
 
     // 3. Specialist Progress Purge
-    this.state.streakCount        = 0;
-    this.state.pendingSabotage    = false;
-    this.state.bountyProcessed    = false;
+    this.state.streakCount = 0;
+    this.state.pendingSabotage = false;
+    this.state.bountyProcessed = false;
     this.state.specialistProcessed = false; // Allow fresh ace/7 counting after reset
 
     console.log("♻️ State Reset: All specialist contexts cleared.");
@@ -796,7 +807,9 @@ export const calculateWinProbability = (game: IGameEngine): number => {
   if (mode === MODES.KING_BOUNTY) {
     if (state.bountyStatus === "DECLINED") return 0.9;
     const activePlayer = players[currentPlayerIndex];
+    if (!activePlayer) return 0.5;
     const handCount = activePlayer.hand.filter((c) => c !== null).length;
+
     if (handCount >= 3) return 0.0;
     if (handCount === 2) return 0.2;
     return 0.3;
@@ -809,7 +822,7 @@ export const calculateWinProbability = (game: IGameEngine): number => {
       if (rank === 1) return 12 / 13;
       return Math.max((13 - rank) / 13, (rank - 1) / 13);
     };
-    const baseProb    = pStep(r);
+    const baseProb = pStep(r);
     const streakPenalty = (state.streakCount || 0) * 0.15;
     return Math.max(0.05, baseProb - streakPenalty);
   }
