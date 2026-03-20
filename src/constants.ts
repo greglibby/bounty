@@ -1,318 +1,318 @@
-// =============================================================================
-// BOUNTY — Constants
-// src/constants.ts
-// =============================================================================
+import { View } from "../ui/View.js";
+import type { Card } from "../types/index.js";
 
-import type { Card, CardColor, Difficulty } from "./types/index.js";
+interface FlyOptions {
+  startRotation?: number;
+  endRotation?: number;
+  targetWidth?: number;
+  duration?: number;
+}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MODES
-//
-// `as const` preserves the string literal types (e.g. "NORMAL" not string)
-// so that state.mode === MODES.NORMAL works with strict equality checks.
-// ─────────────────────────────────────────────────────────────────────────────
+export const AnimationManager = {
+  async flyRectToRect(
+    startRect: DOMRect,
+    endRect: DOMRect,
+    imgPath: string,
+    options: FlyOptions = {},
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      const ghost = document.createElement("img");
+      ghost.src = imgPath;
+      ghost.className = "ghost-card";
 
-export const MODES = {
-  CEREMONY:     "CEREMONY",
-  NORMAL:       "NORMAL",
-  DISCARD:      "DISCARD",
-  QUEEN_SOCIAL: "QUEEN_SOCIAL",
-  KING_BOUNTY:  "KING_BOUNTY",
-  LUCKY_7:      "LUCKY_7",
-  TRIPLE:       "TRIPLE",
-  SABOTAGE:     "SABOTAGE",
-  SHIELD:       "SHIELD",
-} as const;
+      ghost.style.left = `${startRect.left}px`;
+      ghost.style.top = `${startRect.top}px`;
+      ghost.style.width = `${startRect.width}px`;
+      ghost.style.height = `${startRect.height}px`;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TIMING
-// ─────────────────────────────────────────────────────────────────────────────
+      const startRot = options.startRotation || 0;
+      ghost.style.transform = `rotate(${startRot}deg)`;
 
-export const TIMING: Record<string, number> = {
-  THINKING:      500,  // pause before CPU makes a guess
-  REVEAL:        800,  // card flips after THINKING pause; pause before result is shown
-  RESULT:        1000, // result shown after the REVEAL pause
-  DISCARD_PAUSE: 300,  // pause after result, before discard banner (when applicable)
-  POST_TURN:     400,  // short pause so the player sees turn result before play moves on
-  SPECIAL_CARD:  1500, // pause after player plays a jack or 4 sabotage from their hand
-  SHUFFLE:       1500, // cinematic pause so player sees shuffle is happening
-  CEREMONY_STEP: 500,  // determining first player, dealing and result
-  VICTORY_PAUSE: 3000, // short pause before victory or elimination banner
-};
+      // Force hardware acceleration
+      ghost.style.willChange = "transform";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RANKS
-// ─────────────────────────────────────────────────────────────────────────────
+      document.body.appendChild(ghost);
+      void ghost.offsetWidth; // Force reflow
 
-export const RANKS: Record<string, number> = {
-  ACE:   1,
-  THREE: 3,
-  FOUR:  4,
-  SEVEN: 7,
-  JACK:  11,
-  QUEEN: 12,
-  KING:  13,
-};
+      const startCenterX = startRect.left + startRect.width / 2;
+      const startCenterY = startRect.top + startRect.height / 2;
+      const endCenterX = endRect.left + endRect.width / 2;
+      const endCenterY = endRect.top + endRect.height / 2;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CARD COLORS
-// ─────────────────────────────────────────────────────────────────────────────
+      const deltaX = endCenterX - startCenterX;
+      const deltaY = endCenterY - startCenterY;
 
-export const CARD_COLORS: CardColor[] = ["Yellow", "Red", "Blue", "Green"];
+      const scale = options.targetWidth
+        ? options.targetWidth / startRect.width
+        : endRect.width / startRect.width;
 
-export const CARD_COLOR_HEX: Record<CardColor, string> = {
-  Red:    "#D94545",
-  Yellow: "#E6B84A",
-  Green:  "#3DA36E",
-  Blue:   "#4587D9",
-};
+      const endRot = options.endRotation || 0;
+      const duration = options.duration || 200;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RANK LABELS
-//
-// Only 4 ranks have display labels; all others render as their numeric value.
-// Typed as Partial so that RANK_LABELS[card.rank] correctly returns
-// string | undefined, keeping the || fallback in FormatCard honest.
-// ─────────────────────────────────────────────────────────────────────────────
+      ghost.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.35, 1)`;
+      // Use translate3d to guarantee GPU rendering
+      ghost.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scale}) rotate(${endRot}deg)`;
 
-export const RANK_LABELS: Partial<Record<number, string>> = {
-  1:  "A",
-  11: "J",
-  12: "Q",
-  13: "K",
-};
+      ghost.addEventListener(
+        "transitionend",
+        () => {
+          ghost.remove();
+          resolve();
+        },
+        { once: true },
+      );
+    });
+  },
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DECK CONFIG
-// ─────────────────────────────────────────────────────────────────────────────
+  async flyAndFlip(
+    startRect: DOMRect,
+    endRect: DOMRect,
+    faceImgPath: string,
+    backImgPath: string,
+    options: FlyOptions = {},
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      const container = document.createElement("div");
+      container.className = "ghost-card-container";
 
-export const DECK_CONFIG: {
-  MIN_RANK: number;
-  MAX_RANK: number;
-  COLORS: CardColor[];
-} = {
-  MIN_RANK: 1,
-  MAX_RANK: 13,
-  COLORS: CARD_COLORS,
-};
+      const cardHeight = startRect.width * (1065 / 750);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMBO RULES
-// ─────────────────────────────────────────────────────────────────────────────
+      container.style.left = `${startRect.left}px`;
+      container.style.top = `${startRect.top}px`;
+      container.style.width = `${startRect.width}px`;
+      container.style.height = `${cardHeight}px`;
 
-export const COMBO_RULES = {
-  MIN_STRAIGHT_LENGTH: 3,
-  MIN_FLUSH_LENGTH:    3,
-  MAX_HAND_SIZE:       4,
-};
+      // Prep for GPU handoff
+      container.style.willChange = "transform";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// UI STRINGS
-// ─────────────────────────────────────────────────────────────────────────────
+      container.innerHTML = `
+        <div class="ghost-card-flip-inner" style="will-change: transform;">
+          <img src="${faceImgPath}" class="ghost-card-front">
+          <img src="${backImgPath}" class="ghost-card-back">
+        </div>
+      `;
 
-export const UI_STRINGS = {
-  CEREMONY_BANNER: "Lowest goes first.",
-  CEREMONY_MSG:    "Lowest card goes first",
-  SHUFFLING:       "Shuffling deck...",
+      document.body.appendChild(container);
+      void container.offsetWidth;
 
-  // Normal Guess
-  MODE_SUFFIX:       "'s Guess",
-  RESULT_CORRECT:    "Correct!",
-  RESULT_INCORRECT:  "Incorrect! Take card.",
-  RESULT_TIE:        "Tie! Guess again.",
+      const innerCard = container.querySelector(
+        ".ghost-card-flip-inner",
+      ) as HTMLElement;
+      const flipDuration = options.duration ? options.duration * 0.4 : 200;
 
-  // 3 — Triple
-  TRIPLE_BANNER:  "Triple!",
-  TRIPLE_SUCCESS: "Success!",
-  STREAK_NEEDS_3: "Needs 3 correct guesses",
-  STREAK_NEEDS_2: "Needs 2 more",
-  STREAK_NEEDS_1: "Needs 1 more",
+      innerCard.style.transition = `transform ${flipDuration}ms ease-in-out`;
 
-  // 4 — Sabotage
-  SABOTAGE_BANNER:      "Sabotage!",
-  SABOTAGE_INSTRUCTION: "Guess the colour to clear!",
-  SABOTAGE_VICTIM_MSG:  "Next player must guess colour!",
-  SABOTAGE_FAILED:      "Sabotaged! Take a card.",
+      requestAnimationFrame(() => {
+        innerCard.style.transform = "rotateY(-180deg)";
+      });
 
-  // Lucky 7
-  LUCKY_7_BANNER:  "Lucky 7!",
-  LUCKY_7_SUCCESS: "Correct! Discard 1 card.",
+      innerCard.addEventListener(
+        "transitionend",
+        () => {
+          container.style.transition = "none";
+          container.style.left = `${startRect.left - startRect.width}px`;
 
-  // Shield
-  SHIELD_BANNER:  "Shield played!",
-  SHIELD_MESSAGE: "Skip turn",
+          innerCard.style.transition = "none";
+          innerCard.style.transform = "rotateY(0deg)";
+          innerCard.innerHTML = `<img src="${faceImgPath}" style="width: 100%; height: 100%; border-radius: inherit; box-shadow: 0 8px 20px rgba(0,0,0,0.4);">`;
 
-  // Queen Social
-  QUEEN_SOCIAL_BANNER: "Rainbow Round!",
-  QUEEN_SOCIAL_SUCCESS: "Correct!",
-  SOCIAL_THEME_MSG: "Theme: ",   // prefix
-  SOCIAL_PICKED:    " picked ",  // "PLAYER picked COLOR"
+          void container.offsetWidth;
 
-  // King Bounty
-  KING_BOUNTY_BANNER:      "Bounty Challenge!",
-  KING_BOUNTY_INSTRUCTION: "Match a hand card to win",
-  KING_BOUNTY_SUCCESS:     "Match! Instant win!",
-  KING_BOUNTY_FAIL:        "No match. Take a card.",
-  KING_BOUNTY_ACCEPT:      "Accept",
-  KING_BOUNTY_DECLINE:     "Decline",
-  BOUNTY_ACCEPTED:         "Challenge accepted!",
-  BOUNTY_DECLINED:         "Challenge declined.",
+          const flyDuration = options.duration ? options.duration * 0.6 : 300;
+          const newStartRect = container.getBoundingClientRect();
 
-  // Combo Banners
-  COMBO_PAIR:     "Discard the pair!",
-  COMBO_STRAIGHT: "Discard the straight!",
-  COMBO_FLUSH:    "Discard the flush!",
+          const startCenterX = newStartRect.left + newStartRect.width / 2;
+          const startCenterY = newStartRect.top + newStartRect.height / 2;
+          const endCenterX = endRect.left + endRect.width / 2;
+          const endCenterY = endRect.top + endRect.height / 2;
 
-  // Discard
-  COMBO_BANNER:   "Discard combo!",
-  DISCARD_BANNER: "Discard!",
-  SELECT_DISCARD: "Select ",
-  SELECT_SUFFIX:  " card(s) to discard.",
+          const deltaX = endCenterX - startCenterX;
+          const deltaY = endCenterY - startCenterY;
 
-  // Endgame
-  ELIMINATED:      " is eliminated!",
-  WINNER:          " wins the game!",
-  VICTORY_BANNER:  "Victory!",
-  GAME_OVER_BANNER:"Game Over!",
-  VICTORY_MSG:     "You win the game!",
-  GAME_OVER_MSG:   "Better luck next time.",
+          const scale = options.targetWidth
+            ? options.targetWidth / newStartRect.width
+            : endRect.width / newStartRect.width;
+          const endRot = options.endRotation || 0;
 
-  // Settings
-  SETTINGS_BANNER:  "Settings",
-  LABEL_SPEED:      "Game Speed",
-  LABEL_DIFFICULTY: "Difficulty",
-  LABEL_SOUND:      "Sound Effects",
-  SPEED_SLOW:       "Slow",
-  SPEED_NORMAL:     "Normal",
-  SPEED_FAST:       "Fast",
-  SOUND_ON:         "On",
-  SOUND_OFF:        "Off",
-};
+          container.style.transition = `transform ${flyDuration}ms cubic-bezier(0.25, 1, 0.35, 1)`;
+          // Use translate3d to guarantee GPU rendering
+          container.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scale}) rotate(${endRot}deg)`;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ELIMINATION CAUSES
-//
-// Computed keys use the MODES values (string literals after `as const`).
-// Typed as Record<string, string> to accommodate the non-MODES keys
-// (SURVIVOR, LAST_STANDING) alongside the mode-keyed entries.
-// ─────────────────────────────────────────────────────────────────────────────
+          container.addEventListener(
+            "transitionend",
+            () => {
+              container.remove();
+              resolve();
+            },
+            { once: true },
+          );
+        },
+        { once: true },
+      );
+    });
+  },
 
-export const ELIMINATION_CAUSES: Record<string, string> = {
-  [MODES.NORMAL]:       "Normal Guess",
-  [MODES.QUEEN_SOCIAL]: "Social Round",
-  [MODES.SABOTAGE]:     "Sabotage",
-  [MODES.LUCKY_7]:      "Lucky 7",
-  [MODES.TRIPLE]:       "Triple",
-  [MODES.KING_BOUNTY]:  "Bounty Challenge",
-  SURVIVOR:             "Survivor",
-  LAST_STANDING:        "Last Standing",
-};
+  async flyDrawToCenter(card: Card | null): Promise<void> {
+    const drawSlot = document.getElementById("draw-pile-slot");
+    const discardSlot = document.getElementById("discard-pile-slot");
+    if (!drawSlot || !discardSlot || !card) return Promise.resolve();
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SETTINGS DEFAULTS
-// ─────────────────────────────────────────────────────────────────────────────
+    const startRect = drawSlot.getBoundingClientRect();
+    const strewnCards = discardSlot.querySelectorAll(".strewn-card");
+    const targetCard = strewnCards[strewnCards.length - 1] as HTMLElement | undefined;
 
-export const SETTINGS_DEFAULTS: {
-  SPEED: number;
-  DIFFICULTY: Difficulty;
-  IS_MUTED: boolean;
-} = {
-  SPEED:      1.0,
-  DIFFICULTY: "NORMAL",
-  IS_MUTED:   false,
-};
+    let endRect: DOMRect,
+      endRot = 0,
+      targetWidth: number;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DIFFICULTY MODES
-// ─────────────────────────────────────────────────────────────────────────────
+    if (targetCard) {
+      endRect = targetCard.getBoundingClientRect();
+      targetWidth = (targetCard as HTMLElement).offsetWidth;
 
-export const DIFFICULTY_MODES = {
-  EASY:   "EASY",
-  NORMAL: "NORMAL",
-  HARD:   "HARD",
-} as const;
+      const transformStr = (targetCard as HTMLElement).style.transform;
+      const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
+      // Group 1 is guaranteed defined when the match succeeds
+      if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
+    } else {
+      endRect = discardSlot.getBoundingClientRect();
+      targetWidth = discardSlot.offsetWidth;
+    }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COLORS (miscellaneous UI colours not tied to cards)
-// ─────────────────────────────────────────────────────────────────────────────
+    const faceImg = View.getCardImagePath(card);
+    const backImg = "images/cards/Back.png";
 
-export const COLORS: Record<string, string> = {
-  PURPLE: "#A020F0",
-};
+    await this.flyAndFlip(startRect, endRect!, faceImg, backImg, {
+      duration: 200,
+      endRotation: endRot,
+      targetWidth: targetWidth!,
+    });
+  },
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FormatCard
-// ─────────────────────────────────────────────────────────────────────────────
+  /**
+   * Sequence 2: Center (Transient Slot) -> Player Hand
+   */
+  async flyTransientToHand(
+    playerIdx: number,
+    card: Card | null,
+    startRect: DOMRect | null,
+  ): Promise<void> {
+    if (!startRect || !card) return Promise.resolve();
 
-export const FormatCard = (card: Card | null | undefined): string => {
-  if (!card) return "";
-  const rank: string = RANK_LABELS[card.rank] ?? String(card.rank);
-  const colorInitial = card.color ? card.color[0] : "";
-  return `${rank}${colorInitial}`;
-};
+    const imgPath = View.getCardImagePath(card);
+    const playerBox = document.getElementById(`player-${playerIdx}`);
+    if (!playerBox) return Promise.resolve();
 
-// ─────────────────────────────────────────────────────────────────────────────
-// REACTIONS
-// ─────────────────────────────────────────────────────────────────────────────
+    const targetImg = Array.from(
+      playerBox.querySelectorAll<HTMLImageElement>(".card-img"),
+    ).find((img) => img.src.includes(imgPath.replace("images/", "")));
 
-export const REACTIONS = {
-  CORRECT: [
-    "YES!", "GOT IT!", "NICE!", "BOOM!", "EASY!", "LET'S GO!", "CRUSHED IT",
-    "ON FIRE!", "PURE SKILL", "BULLSEYE!", "CLUTCH!", "BIG BRAIN!", "TOO GOOD!",
-    "TOO EASY", "CALL ME PRO!", "EASY PEEZY!", "WINNING!", "NAILED IT", "PRO MOVES!",
-  ],
+    if (!targetImg) return Promise.resolve();
 
-  INCORRECT: [
-    "OH NO!", "DANG!", "TOUGH!", "OOF!", "I'M SO BAD!", "ROUGH...", "OUCH!",
-    "NOT TODAY!", "HEARTBREAK!", "SO CLOSE!", "RIGGED!", "I'M BROKE", "SAD TIMES!",
-    "TRAGIC", "WHOOPS!", "MY EYES!", "HELP!", "I QUIT!", "EXCUSE ME?", "NOOOOOO!",
-  ],
+    const endRect = targetImg.getBoundingClientRect();
 
-  TIE: [
-    "AGAIN!", "ONE MORE!", "ANOTHER!", "RE-FLIP!", "STALEMATE!", "DEJA VU!",
-    "DO-OVER!", "TWINS!", "COPY CAT", "GLITCH?", "REDO!", "WHAT??",
-    "DOUBLE UP", "SNAP!", "BORING!", "AWKWARD...",
-  ],
+    targetImg.style.opacity = "0";
+    await this.flyRectToRect(startRect, endRect, imgPath, {
+      duration: 200,
+      targetWidth: targetImg.offsetWidth, // Exact match to destination size
+    });
+    targetImg.style.opacity = "1";
+  },
 
-  BOUNTY_HIGH_RISK: [
-    "SO RISKY!", "I'M SCARED!", "I SHOULDN'T.", "BIG GAMBLE",
-    "PRAYER!", "DANGEROUS", "COWBOY UP!", "SCARY...",
-  ],
+  async flyToDiscard(startRect: DOMRect, card: Card | null): Promise<void> {
+    const discardSlot = document.getElementById("discard-pile-slot");
+    if (!discardSlot || !card) return Promise.resolve();
 
-  BOUNTY_TACTICAL: [
-    "I'M IN!", "MAYBE...", "ODDS GOOD!", "SMART PLAY",
-    "COIN FLIP", "I'LL RISK", "WHY NOT?", "CALCULATED",
-  ],
+    const imgPath = View.getCardImagePath(card);
+    const targetWidth = discardSlot.offsetWidth;
 
-  BOUNTY_LOW_RISK: [
-    "FREE WIN!", "SURE THING", "EASY!", "BANK IT!",
-    "NO BRAINER", "LOCKED IN", "GUARANTEED", "SAFE BET",
-  ],
-} as const;
+    const allImgs = discardSlot.querySelectorAll(".card-img");
+    const targetImg = allImgs[allImgs.length - 1] as HTMLElement | undefined;
 
-// Derive the union type from the object keys so pickReaction stays exhaustive.
-export type ReactionType = keyof typeof REACTIONS;
+    let endRot = 0;
+    let targetParent: HTMLElement | null = null;
 
-export const pickReaction = (type: ReactionType): string => {
-  const pool = REACTIONS[type];
-  if (!pool || pool.length === 0) return "";
-  return pool[Math.floor(Math.random() * pool.length)];
-};
+    if (targetImg) {
+      targetParent =
+        (targetImg as HTMLElement).closest(".strewn-card") ||
+        (targetImg as HTMLElement);
+      const transformStr = targetParent ? targetParent.style.transform : "";
+      const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
+      // Group 1 is guaranteed defined when the match succeeds
+      if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
 
-export const pickBountyReaction = (handCount: number): string => {
-  if (handCount >= 3) return pickReaction("BOUNTY_HIGH_RISK");
-  if (handCount === 2) return pickReaction("BOUNTY_TACTICAL");
-  return pickReaction("BOUNTY_LOW_RISK");
-};
+      // Hide physical target
+      targetParent.style.opacity = "0";
+    }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STREWN CONFIG
-// ─────────────────────────────────────────────────────────────────────────────
+    const endRect = discardSlot.getBoundingClientRect();
 
-export const STREWN_CONFIG: {
-  ROTATIONS: number[];
-  OFFSETS: string[];
-} = {
-  ROTATIONS: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  OFFSETS:   ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
+    await this.flyRectToRect(startRect, endRect, imgPath, {
+      duration: 200,
+      endRotation: endRot,
+      targetWidth: targetWidth,
+    });
+
+    // Reveal physical target when flight completes
+    if (targetParent) targetParent.style.opacity = "1";
+  },
+
+  async flyHandToDiscard(startRect: DOMRect, card: Card | null): Promise<void> {
+    const discardSlot = document.getElementById("discard-pile-slot");
+    if (!discardSlot || !card) return Promise.resolve();
+
+    const strewnCards = discardSlot.querySelectorAll(".strewn-card");
+    const targetCard = strewnCards[strewnCards.length - 1] as HTMLElement | undefined;
+
+    if (!targetCard) return Promise.resolve();
+
+    const endRect = targetCard.getBoundingClientRect();
+    const targetWidth = targetCard.offsetWidth;
+    const imgPath = View.getCardImagePath(card);
+
+    let endRot = 0;
+    const transformStr = targetCard.style.transform;
+    const rotateMatch = transformStr.match(/rotate\(([-0-9.]+)deg\)/);
+    // Group 1 is guaranteed defined when the match succeeds
+    if (rotateMatch) endRot = parseFloat(rotateMatch[1]!);
+
+    // Hide physical target
+    targetCard.style.opacity = "0";
+
+    await this.flyRectToRect(startRect, endRect, imgPath, {
+      duration: 200,
+      endRotation: endRot,
+      targetWidth: targetWidth,
+    });
+
+    // Reveal physical target when flight completes
+    targetCard.style.opacity = "1";
+  },
+
+  /**
+   * Sequence: Draw Pile -> Player Hand (Opening Ceremony)
+   */
+  async flyDrawToHand(playerIdx: number, card: Card | null): Promise<void> {
+    const drawSlot = document.getElementById("draw-pile-slot");
+    if (!drawSlot || !card) return Promise.resolve();
+
+    const imgPath = View.getCardImagePath(card);
+    const playerBox = document.getElementById(`player-${playerIdx}`);
+    if (!playerBox) return Promise.resolve();
+
+    const targetImg = Array.from(
+      playerBox.querySelectorAll<HTMLImageElement>(".card-img"),
+    ).find((img) => img.src.includes(imgPath.replace("images/", "")));
+
+    if (!targetImg) return Promise.resolve();
+
+    const startRect = drawSlot.getBoundingClientRect();
+    const endRect = targetImg.getBoundingClientRect();
+
+    targetImg.style.opacity = "0";
+    await this.flyRectToRect(startRect, endRect, imgPath, {
+      duration: 200,
+      targetWidth: targetImg.offsetWidth, // Exact match to destination size
+    });
+    targetImg.style.opacity = "1";
+  },
 };

@@ -55,6 +55,8 @@ export const Sabotage: Specialist = {
    */
   execute(game, slotIndex) {
     const player = game.players[game.currentPlayerIndex];
+    if (!player) return null;
+
     const card = player.hand[slotIndex];
 
     if (!card || card.rank !== 4) return null;

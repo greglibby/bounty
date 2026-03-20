@@ -41,6 +41,10 @@ export const KingBounty: Omit<Specialist, "execute"> & {
 
   generateChallengeScript(game: IGameEngine): ChallengeScript {
     const player = game.players[game.currentPlayerIndex];
+    if (!player) {
+      return { type: "ACCEPT_START", sequence: [], matchFound: false, endTurn: true };
+    }
+
     const activeHand = player.hand.filter((c): c is Card => c !== null);
     const sequence: BountySequenceStep[] = [];
     let matchFound = false;

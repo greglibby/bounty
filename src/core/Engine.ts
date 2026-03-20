@@ -18,6 +18,7 @@ import { SoundManager } from "./SoundManager.js";
 import type {
   Card,
   CardColor,
+  GameMode,
   GameState,
   GameStats,
   IGameEngine,
