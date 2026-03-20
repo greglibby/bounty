@@ -955,6 +955,8 @@ export const Director = {
         slotIndex: number,
         player: Player
     ): Promise<void> {
+        // FIX (noUncheckedIndexedAccess): player.hand[slotIndex] returns
+        // Card | null | undefined — coerce to Card | null with ?? null.
         const cardToPlay: Card | null = player.hand[slotIndex] ?? null;
         if (!cardToPlay) return;
 
@@ -1094,6 +1096,7 @@ export const Director = {
             !game.state.gameOver
         ) {
             if (game.state.mode === MODES.KING_BOUNTY) {
+                // FIX (noUncheckedIndexedAccess): players[0] is possibly undefined.
                 const activeCards: number = game.players[0]?.hand.filter(
                     (c) => c !== null,
                 ).length ?? 0;
@@ -1137,6 +1140,8 @@ export const Director = {
                 ? "BOUNTY_INSTANT"
                 : "LAST_MAN_STANDING";
 
+            // FIX (noUncheckedIndexedAccess): playerWon does not exist on GameStats.
+            // Cast the spread object so TypeScript accepts the extra field.
             RecordManager.updateRecords({
                 ...game.gameStats,
                 winMethod: finalWinMethod,
