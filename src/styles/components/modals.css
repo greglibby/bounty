@@ -1,0 +1,637 @@
+/* ============================================================
+   BOUNTY — MODALS & OVERLAYS
+   css/components/modals.css
+
+   Covers:
+     - #rules-overlay + all rules content classes
+     - .settings-modal-backdrop / box / header / body
+     - .settings-opt / .settings-label / .settings-group
+     - .settings-rules-btn / .settings-endgame-btn
+     - Sound toggle active state
+     - #stats-overlay + stats content classes
+     - #game-over-overlay (legacy, kept for JS compat)
+     - .nav-button-group / #nav-row (JS-compat hidden group)
+   ============================================================ */
+
+/* ── RULES OVERLAY ──────────────────────────────────────────
+   Full-screen light-mode rules panel.
+   ──────────────────────────────────────────────────────────── */
+#rules-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: var(--z-overlay);
+  display: none;
+  padding: 10px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+}
+
+.rules-header {
+  text-align: center;
+}
+
+.rules-content {
+  background: var(--menu-bg);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  height: 90vh;
+  width: 100%;
+  max-width: 650px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--menu-navy);
+  text-align: left;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.rules-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.rules-section h3 {
+  color: var(--menu-navy);
+  font-family: var(--font-primary);
+  font-size: var(--fs-large);
+  font-weight: 800;
+  border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+}
+
+.rule-item {
+  margin-bottom: 12px;
+}
+
+.rule-item p {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--menu-navy);
+}
+
+.rule-label {
+  display: inline-block;
+  font-weight: bold;
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-bottom: 2px;
+}
+
+.small-text {
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  color: var(--menu-navy);
+  margin-bottom: 10px;
+}
+
+/* ── SPECIALIST CARD LIST (inside rules) ────────────────────
+   ──────────────────────────────────────────────────────────── */
+.specialist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(26, 39, 68, 0.05);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  line-height: 1.3;
+  color: var(--menu-navy);
+}
+
+.spec-rank,
+.combo-rank {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 4px;
+  flex-shrink: 0;
+  color: #000 !important;
+}
+
+.spec-rank {
+  min-width: 30px;
+  font-size: 0.9rem;
+}
+
+.combo-rank {
+  min-width: 75px;
+  background: var(--neon);
+  color: #000;
+  font-size: 0.65rem;
+}
+
+/* ── SPECIALIST BADGE COLOURS (in rules) ────────────────────
+   ──────────────────────────────────────────────────────────── */
+.ace-bg {
+  background: #ff4500 !important;
+  color: white;
+}
+.sabotage-bg {
+  background: #ff4d4d !important;
+  color: white;
+}
+.lucky-bg {
+  background: #ff00ff !important;
+  color: white;
+}
+.shield-bg {
+  background: #4d4dff !important;
+  color: white;
+}
+.social-bg {
+  background: #00fbff !important;
+  color: black;
+}
+.bounty-bg {
+  background: #ffd700 !important;
+  color: black;
+}
+
+/* ── SETTINGS MODAL ─────────────────────────────────────────
+   Blurred backdrop + white card modal.
+   ──────────────────────────────────────────────────────────── */
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: var(--z-settings);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.settings-modal-box {
+  background: var(--menu-bg);
+  border: 1px solid rgba(26, 39, 68, 0.12);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(26, 39, 68, 0.08);
+  animation: settings-modal-in 0.18s ease-out;
+}
+
+/* Blue header bar */
+.settings-modal-header {
+  background: var(--menu-header-bg);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  height: 52px;
+  position: relative;
+}
+
+.settings-modal-title {
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: var(--fs-menu);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* X close button */
+.settings-modal-close {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+  line-height: 1;
+  padding: 0;
+}
+
+.settings-modal-close:active {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-50%) scale(0.9);
+}
+
+/* Modal body */
+.settings-modal-body {
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Each settings group */
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.settings-label {
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--menu-navy);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Options row */
+.settings-options-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* Option button — unselected */
+.settings-opt {
+  flex: 1;
+  height: 36px;
+  background: rgba(26, 39, 68, 0.07);
+  border: 1px solid rgba(26, 39, 68, 0.18);
+  border-radius: var(--radius-md);
+  color: rgba(26, 39, 68, 0.55);
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-opt:active {
+  transform: scale(0.95);
+}
+
+/* Option button — selected */
+.settings-opt.settings-opt-active {
+  background: var(--grad-settings-blue);
+  border-color: #1a7dc8;
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 2px 6px rgba(30, 120, 220, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Sound toggle active — same blue as selected opt */
+#home-sound-toggle.settings-opt-active,
+#ingame-sound-toggle.settings-opt-active {
+  background: var(--grad-settings-blue) !important;
+  border-color: #1a7dc8 !important;
+  color: #fff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 2px 6px rgba(30, 120, 220, 0.35) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Wide option (Sound toggle) */
+.settings-opt-wide {
+  flex: 1;
+}
+
+/* Divider between settings and action buttons */
+.settings-divider {
+  height: 1px;
+  background: rgba(26, 39, 68, 0.12);
+  margin: 2px 0;
+}
+
+/* Rules button — blue */
+.settings-rules-btn {
+  width: 100%;
+  height: 42px;
+  background: var(--grad-rules-blue);
+  border: none;
+  border-radius: var(--btn-radius-lg);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: var(--fs-menu);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 3px 0 var(--shadow-blue),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: filter var(--transition-fast);
+}
+
+.settings-rules-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--shadow-blue);
+}
+
+/* End Game button — red */
+.settings-endgame-btn {
+  width: 100%;
+  height: 42px;
+  background: var(--grad-endgame-red);
+  border: none;
+  border-radius: var(--btn-radius-lg);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: var(--fs-menu);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 3px 0 var(--shadow-red),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: filter var(--transition-fast);
+}
+
+.settings-endgame-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--shadow-red);
+}
+
+/* Confirm state */
+.settings-endgame-btn-confirm {
+  background: #ff4d4d !important;
+  box-shadow:
+    0 3px 0 #8a0000,
+    0 0 16px rgba(255, 77, 77, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* ── NAV BUTTON GROUP (JS-compat hidden row) ─────────────────
+   These buttons are preserved in the DOM for JS to call.
+   The row itself is never visible — the bottom nav bar
+   (ingame-nav-bar) is what the user actually sees.
+   ──────────────────────────────────────────────────────────── */
+.nav-button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+#nav-row {
+  display: none !important;
+}
+
+/* ── IN-GAME PERSISTENT FOOTER NAV ─────────────────────────
+   Grid row 4 in #game-container. Appears only when
+   body.game-active is set. 3 equal slots: Quit / Rules / Settings.
+   Darker than the HUD bar per design spec.
+   ──────────────────────────────────────────────────────────── */
+#ingame-nav-bar {
+  display: none;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  height: 52px;
+  background: rgba(0, 20, 20, 0.72);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  /* Safe-area padding for notched phones */
+  padding-bottom: var(--safe-bottom);
+}
+
+body.game-active #ingame-nav-bar {
+  display: flex !important;
+}
+
+/* Each nav slot */
+.ingame-nav-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-primary);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+  padding: 0;
+  position: relative;
+}
+
+/* Divider between slots */
+.ingame-nav-slot + .ingame-nav-slot {
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ingame-nav-slot svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.ingame-nav-slot:active {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+/* Quit slot — red tint on active/confirm */
+#ingame-nav-quit {
+  color: rgba(255, 120, 100, 0.7);
+}
+#ingame-nav-quit:active {
+  color: #ff6b6b;
+  background: rgba(255, 77, 77, 0.1);
+}
+
+/* Confirm state — full red highlight */
+#ingame-nav-quit.confirming {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.15);
+  animation: nav-confirm-pulse 0.6s ease-in-out infinite alternate;
+}
+
+#ingame-nav-quit.confirming .ingame-nav-label {
+  color: #ff4d4d;
+}
+
+/* Rules slot — blue tint */
+#ingame-nav-rules {
+  color: rgba(110, 184, 255, 0.7);
+}
+#ingame-nav-rules:active {
+  color: #6eb8ff;
+  background: rgba(30, 120, 220, 0.1);
+}
+
+/* Settings slot */
+#ingame-nav-settings {
+  color: rgba(255, 255, 255, 0.55);
+}
+#ingame-nav-settings:active,
+body.settings-active #ingame-nav-settings {
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.ingame-nav-label {
+  line-height: 1;
+}
+
+@keyframes nav-confirm-pulse {
+  from { background: rgba(255, 77, 77, 0.1); }
+  to   { background: rgba(255, 77, 77, 0.25); }
+}
+
+/* ── STATS OVERLAY ──────────────────────────────────────────
+   Post-game full-screen stats report (dark mode).
+   ──────────────────────────────────────────────────────────── */
+#stats-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: var(--z-stats);
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.stats-container {
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  border: 2px solid var(--gold);
+  padding: 15px;
+  background: #0a0a0a;
+  border-radius: 12px;
+}
+
+.player-stat-row {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0.6fr 0.9fr 1.2fr;
+  gap: 5px;
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 4px;
+  align-items: center;
+}
+
+.stats-section-title {
+  color: var(--cyan);
+  font-size: 0.9rem;
+  margin: 15px 0 8px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+.stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #ccc;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+/* Result row colour coding */
+.full-width {
+  grid-column: span 2;
+}
+.bounty {
+  border: 1px solid #ffcc00;
+  background: rgba(255, 204, 0, 0.05);
+}
+.success {
+  background: #2e7d32;
+}
+.fail {
+  background: #c62828;
+}
+.tie {
+  background: #555;
+}
+
+/* ── GAME OVER OVERLAY (legacy) ─────────────────────────────
+   Kept for JS compatibility. In practice superseded by
+   #stats-overlay — but don't remove until JS is updated.
+   ──────────────────────────────────────────────────────────── */
+#game-over-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+  background: #222;
+  padding: 3rem;
+  border: 2px solid gold;
+}
+
+.overlay-content h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.overlay-content button {
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: gold;
+  color: black;
+  border: none;
+  font-weight: bold;
+}

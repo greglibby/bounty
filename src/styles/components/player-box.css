@@ -1,0 +1,460 @@
+/* ============================================================
+   BOUNTY — PLAYER BOXES
+   css/components/player-box.css
+
+   Covers:
+     - .player-box base and variants (.cpu-box, .human-box)
+     - Active / eliminated states
+     - Avatar pod (.avatar-pod, .avatar-circle, .avatar-img)
+     - Human floating avatar (.human-avatar-float)
+     - Name pills (.player-name, .human-name-pill)
+     - Avatar change hint badge
+     - Speech bubbles (.speech-bubble, .speech-bubble-human)
+     - Avatar picker modal grid (.avatar-picker-grid)
+   ============================================================ */
+
+/* ── PLAYER BOX BASE ────────────────────────────────────────
+   Teal glass surface. No backdrop-filter (performance).
+   ──────────────────────────────────────────────────────────── */
+.player-box {
+  background: var(--surface-game);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-game-border);
+  box-shadow: var(--surface-game-shadow);
+  box-sizing: border-box;
+  transition: all var(--transition-med);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── CPU BOX ────────────────────────────────────────────────
+   Three equal columns in the top strip.
+   padding-top derived from fluid avatar token so the internal
+   space for the half-out avatar scales correctly.
+   ──────────────────────────────────────────────────────────── */
+.cpu-box {
+  width: var(--cpu-box-width);
+  padding: calc(var(--avatar-cpu-offset) + 4px) 3px 5px;
+  gap: 4px;
+  border-color: rgba(255, 255, 255, 0.1);
+  overflow: visible;
+}
+
+/* ── HUMAN BOX ──────────────────────────────────────────────
+   Wider box. Top padding derived from the fluid avatar token
+   so the avatar bleed space scales correctly on all screen sizes.
+   ──────────────────────────────────────────────────────────── */
+.human-box {
+  width: var(--human-box-width);
+  margin: 0 auto;
+  padding: calc(var(--avatar-human-offset) + 8px) 6px 8px;
+  gap: 4px;
+  border: 1px solid var(--surface-game-border);
+  box-shadow: var(--surface-game-shadow);
+  background: var(--surface-game);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: relative;
+  overflow: visible !important; /* avatar floats above the box */
+}
+
+/* ── ACTIVE STATE ───────────────────────────────────────────
+   White glow ring on whoever's turn it is.
+   ──────────────────────────────────────────────────────────── */
+.player-box.active {
+  border-color: #ffffff;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 20px 6px rgba(255, 255, 255, 0.4);
+}
+
+.human-box.active {
+  border-color: #ffffff;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 20px 6px rgba(255, 255, 255, 0.4);
+}
+
+/* ── ELIMINATED STATE ───────────────────────────────────────
+   Greyed out, non-interactive.
+   ──────────────────────────────────────────────────────────── */
+.player-box.eliminated {
+  opacity: 0.5;
+  filter: grayscale(80%);
+  pointer-events: none;
+}
+
+/* ── NEON GLOW (active turn pulse on border) ────────────────
+   Added/removed by JS each turn.
+   ──────────────────────────────────────────────────────────── */
+.neon-glow {
+  animation: pulse-yellow 0.5s infinite alternate;
+  border-width: 2px !important;
+  border-color: rgba(249, 168, 0, 0.9) !important;
+}
+
+/* ── AVATAR POD ─────────────────────────────────────────────
+   Container for avatar circle + player name (CPU boxes).
+   ──────────────────────────────────────────────────────────── */
+.avatar-pod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+/* CPU avatar circle base — size driven by fluid token */
+.avatar-circle {
+  width: var(--avatar-cpu);
+  height: var(--avatar-cpu);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Extra top padding in the pod so avatar overlaps the box rim */
+.cpu-box .avatar-pod {
+  padding-top: 2px;
+}
+
+/* CPU avatar positioned absolutely to bleed above box.
+   Uses the fluid token so offset tracks the clamped avatar size. */
+.cpu-box .avatar-circle {
+  width: var(--avatar-cpu);
+  height: var(--avatar-cpu);
+  position: absolute;
+  top: calc(var(--avatar-cpu-offset) * -1);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-avatar);
+}
+
+/* Active player — avatar ring brightens */
+.player-box.active .avatar-circle {
+  border-color: #ffffff;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.8),
+    0 0 15px 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Avatar image inside the circle */
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom center;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── CPU PLAYER NAME ────────────────────────────────────────
+   Sits below the avatar circle inside the pod.
+   ──────────────────────────────────────────────────────────── */
+.avatar-pod .player-name {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 20px;
+  padding: 0.5px 8px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  box-sizing: border-box;
+  line-height: 1.5;
+  border: none;
+}
+
+/* ── HUMAN FLOATING AVATAR ──────────────────────────────────
+   Larger circle that sits above the human box.
+   Tapping it opens the avatar/name picker.
+   ──────────────────────────────────────────────────────────── */
+.human-avatar-float {
+  position: absolute;
+  top: calc(var(--avatar-human-offset) * -1);
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--avatar-human);
+  height: var(--avatar-human);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: var(--z-avatar);
+  flex-shrink: 0;
+  transition:
+    border-color var(--transition-menu),
+    box-shadow var(--transition-menu),
+    transform var(--transition-fast);
+}
+
+.human-avatar-float:active {
+  transform: translateX(-50%) scale(0.93);
+}
+
+.human-box.active .human-avatar-float {
+  border-color: #ffffff;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.8),
+    0 0 15px 3px rgba(255, 255, 255, 0.5);
+}
+
+/* ── HUMAN NAME PILL ────────────────────────────────────────
+   Displayed below the human box cards.
+   ──────────────────────────────────────────────────────────── */
+.human-name-pill {
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 20px !important;
+  padding: 2px 16px !important;
+  font-family: var(--font-primary);
+  font-size: var(--fs-large) !important;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92) !important;
+  letter-spacing: 0;
+  text-align: center;
+  border: none !important;
+  margin-top: 0;
+  align-self: center;
+  width: auto !important;
+}
+
+/* ── AVATAR CHANGE HINT BADGE ───────────────────────────────
+   Small "+" dot in the corner of the human avatar.
+   ──────────────────────────────────────────────────────────── */
+.avatar-change-hint {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 215, 0, 0.92);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #000;
+  font-weight: 900;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── SPEECH BUBBLES — CPU ───────────────────────────────────
+   Float above the avatar-circle. JS adds .visible / .fading.
+   ──────────────────────────────────────────────────────────── */
+.speech-bubble {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 5px 10px;
+  font-family: var(--font-bubble);
+  font-size: var(--fs-large);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #000;
+  white-space: nowrap;
+  z-index: var(--z-bubbles);
+  pointer-events: none;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+  animation: bubble-pop 0.18s var(--ease-bounce) both;
+}
+
+/* Downward tail */
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid #ffffff;
+}
+
+.speech-bubble.visible {
+  display: block;
+}
+
+.speech-bubble.pinned {
+  display: block;
+  opacity: 1;
+}
+
+.speech-bubble.fading {
+  animation: bubble-fade 0.35s ease forwards;
+}
+
+/* CPU bubble: sits above the avatar circle.
+   calc: avatar bleeds up by half its height, bubble clears that plus its own ~20px height + 4px gap. */
+.cpu-box .speech-bubble {
+  bottom: auto;
+  top: calc((var(--avatar-cpu-offset) * -1) - 30px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-bubbles);
+}
+
+.cpu-box .speech-bubble::after {
+  top: 100%;
+  border-top-color: #ffffff;
+}
+
+.cpu-box .speech-bubble.visible {
+  display: block;
+  animation: bubble-pop 0.18s var(--ease-bounce) both;
+}
+
+/* Human bubble: sits above the floating avatar.
+   calc: avatar bleeds up by half its height, bubble adds ~24px height + 4px gap. */
+.speech-bubble-human {
+  position: absolute;
+  bottom: auto;
+  top: calc((var(--avatar-human-offset) * -1) - 34px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 12px;
+  z-index: var(--z-bubbles);
+}
+
+.speech-bubble-human::after {
+  top: 100%;
+  border-top-color: #ffffff;
+}
+
+/* ── AVATAR PICKER MODAL GRID ───────────────────────────────
+   3-column grid inside the avatar/name picker overlay.
+   ──────────────────────────────────────────────────────────── */
+.avatar-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 4px;
+  justify-items: center;
+}
+
+.avatar-pick-item {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(26, 39, 68, 0.07);
+  border: 2px solid rgba(26, 39, 68, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color var(--transition-menu),
+    transform var(--transition-fast),
+    box-shadow var(--transition-menu);
+  flex-shrink: 0;
+}
+
+.avatar-pick-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom center;
+  pointer-events: none;
+  display: block;
+}
+
+.avatar-pick-item:active {
+  transform: scale(0.9);
+}
+
+.avatar-pick-item.avatar-pick-selected {
+  border: 3px solid #1a7dc8;
+  box-shadow:
+    0 0 0 3px rgba(30, 120, 220, 0.35),
+    0 0 12px rgba(30, 120, 220, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: rgba(30, 120, 220, 0.1);
+  transform: scale(1.08);
+}
+
+/* ── DANGER-HIGH STATE (danger level ≥ 8) ───────────────────
+   Applied by JS to all player boxes when the meter hits 8+.
+   Overrides the default teal glass with a red tint and
+   replaces the white active-glow border with a red flash.
+   Does NOT override .eliminated (pointer-events stays none).
+   ──────────────────────────────────────────────────────────── */
+.player-box.danger-high {
+  background: rgba(180, 20, 20, 0.32) !important;
+  border-color: rgba(224, 48, 48, 0.6) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(224, 48, 48, 0.3) !important;
+}
+
+/* Active player in danger — flash red instead of white */
+.player-box.active.danger-high {
+  border-color: #e03030 !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(224, 48, 48, 0.9),
+    0 0 0 2px rgba(224, 48, 48, 0.9),
+    0 0 20px 6px rgba(224, 48, 48, 0.45) !important;
+  animation: danger-pulse 0.6s ease-in-out infinite alternate !important;
+}
+
+/* Human box inherits the same rules */
+.human-box.danger-high {
+  background: rgba(180, 20, 20, 0.32) !important;
+  border-color: rgba(224, 48, 48, 0.6) !important;
+}
+
+.human-box.active.danger-high {
+  border-color: #e03030 !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(224, 48, 48, 0.9),
+    0 0 0 2px rgba(224, 48, 48, 0.9),
+    0 0 20px 6px rgba(224, 48, 48, 0.45) !important;
+  animation: danger-pulse 0.6s ease-in-out infinite alternate !important;
+}

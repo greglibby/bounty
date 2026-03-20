@@ -1,0 +1,58 @@
+/* ============================================================
+   BOUNTY — RESET & BASE
+   css/reset.css
+
+   Bare minimum reset. No game-specific rules here — just
+   browser normalisation and the body/html base.
+
+   Load order: tokens.css → reset.css → everything else
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--neon);
+  font-family: var(--font-primary);
+  overflow: hidden;
+  user-select: none;
+  /* Removes the 300ms tap delay on mobile without disabling pinch-zoom */
+  touch-action: manipulation;
+}
+
+/* Remove default button appearance — buttons.css handles all styling */
+button {
+  font-family: var(--font-primary);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+/* Remove default input appearance */
+input {
+  font-family: var(--font-primary);
+}
+
+/* Remove default list styles */
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Images don't overflow their containers */
+img {
+  display: block;
+  max-width: 100%;
+}

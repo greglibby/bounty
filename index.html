@@ -1,0 +1,2227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Bounty</title>
+    <link rel="stylesheet" href="src/styles/tokens.css" />
+    <link rel="stylesheet" href="src/styles/reset.css" />
+    <link rel="stylesheet" href="src/styles/animations.css" />
+    <link rel="stylesheet" href="src/styles/typography.css" />
+    <link rel="stylesheet" href="src/styles/modes.css" />
+    <link rel="stylesheet" href="src/styles/components/cards.css" />
+    <link rel="stylesheet" href="src/styles/components/player-box.css" />
+    <link rel="stylesheet" href="src/styles/components/buttons.css" />
+    <link rel="stylesheet" href="src/styles/components/hud.css" />
+    <link rel="stylesheet" href="src/styles/components/modals.css" />
+    <link rel="stylesheet" href="src/styles/screens/home.css" />
+    <link rel="stylesheet" href="src/styles/screens/game.css" />
+    F
+  </head>
+
+  <body>
+    <h1 id="main-title">BOUNTY</h1>
+    <!-- AVATAR / NAME PICKER MODAL -->
+    <div
+      id="avatar-picker-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        box-sizing: border-box;
+      "
+    >
+      <div
+        style="
+          background: #f5f4f0;
+          border: 1px solid rgba(26, 39, 68, 0.12);
+          border-radius: 14px;
+          width: 100%;
+          max-width: 340px;
+          overflow: hidden;
+          box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.25),
+            0 0 0 1px rgba(26, 39, 68, 0.08);
+        "
+      >
+        <!-- Header — blue gradient matching settings -->
+        <div
+          style="
+            background: linear-gradient(180deg, #4a9fe8 0%, #1e6fc4 100%);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 14px;
+          "
+        >
+          <h3
+            style="
+              color: #fff;
+              margin: 0;
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 1.15rem;
+              font-weight: 800;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            "
+          >
+            Profile
+          </h3>
+        </div>
+
+        <!-- Body -->
+        <div
+          style="
+            padding: 16px 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+          "
+        >
+          <!-- Name input -->
+          <div>
+            <div
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #1a2744;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                margin-bottom: 7px;
+              "
+            >
+              Your Name
+            </div>
+            <input
+              type="text"
+              id="avatar-modal-name-input"
+              maxlength="10"
+              placeholder="Tap to enter name"
+              autocomplete="off"
+              style="
+                width: 100%;
+                box-sizing: border-box;
+                background: linear-gradient(
+                  180deg,
+                  #6ec6ff 0%,
+                  #2e9fe8 55%,
+                  #1a7dc8 100%
+                );
+                border: 1px solid #1a7dc8;
+                border-radius: 8px;
+                color: #fff;
+                font-family: &quot;Inter&quot;, sans-serif;
+                font-size: 0.95rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                padding: 10px 14px;
+                outline: none;
+                text-align: center;
+                cursor: pointer;
+                box-shadow:
+                  inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                  0 2px 6px rgba(30, 120, 220, 0.35);
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+                transition:
+                  background 0.15s ease,
+                  border-color 0.15s ease,
+                  color 0.15s ease,
+                  box-shadow 0.15s ease;
+              "
+            />
+          </div>
+
+          <!-- Avatar label -->
+          <div
+            style="
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 0.7rem;
+              font-weight: 700;
+              color: #1a2744;
+              letter-spacing: 0.5px;
+              text-transform: uppercase;
+              margin-bottom: -6px;
+            "
+          >
+            Choose Avatar
+          </div>
+
+          <!-- Avatar grid -->
+          <div class="avatar-picker-grid">
+            <div class="avatar-pick-item" data-src="images/Avatars/man 1.png">
+              <img
+                src="images/Avatars/man 1.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/man 2.png">
+              <img
+                src="images/Avatars/man 2.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/man 3.png">
+              <img
+                src="images/Avatars/man 3.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/boy 1.png">
+              <img
+                src="images/Avatars/boy 1.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/boy 2.png">
+              <img
+                src="images/Avatars/boy 2.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/boy 3.png">
+              <img
+                src="images/Avatars/boy 3.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/woman 1.png">
+              <img
+                src="images/Avatars/woman 1.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/woman 2.png">
+              <img
+                src="images/Avatars/woman 2.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/woman 3.png">
+              <img
+                src="images/Avatars/woman 3.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/girl 1.png">
+              <img
+                src="images/Avatars/girl 1.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/girl 2.png">
+              <img
+                src="images/Avatars/girl 2.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+            <div class="avatar-pick-item" data-src="images/Avatars/girl 3.png">
+              <img
+                src="images/Avatars/girl 3.png"
+                onerror="this.parentElement.style.opacity = '0.3'"
+              />
+            </div>
+          </div>
+
+          <!-- Close button -->
+          <button
+            id="avatar-picker-close"
+            style="
+              width: 100%;
+              height: 36px;
+              background: rgba(26, 39, 68, 0.07);
+              border: 1px solid rgba(26, 39, 68, 0.18);
+              border-radius: 8px;
+              color: rgba(26, 39, 68, 0.55);
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 0.75rem;
+              font-weight: 700;
+              letter-spacing: 0.3px;
+              text-transform: uppercase;
+              cursor: pointer;
+            "
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TROPHY ICON (top-left, home screen only) -->
+    <div id="trophy-btn" aria-label="Records">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M7 2v2H5C3.9 4 3 4.9 3 6v2c0 2.8 2.1 5.1 4.8 5.5C8.6 15 10.2 16.3 12 16.7V19H9v2h6v-2h-3v-2.3c1.8-.4 3.4-1.7 4.2-3.2C18.9 13.1 21 10.8 21 8V6c0-1.1-.9-2-2-2h-2V2H7zm-2 4h2v4.8C5.5 10.3 5 9.2 5 8V6zm14 2c0 1.2-.5 2.3-1 2.8V6h2v2z"
+        />
+        <rect x="8" y="20" width="8" height="2" rx="1" />
+      </svg>
+    </div>
+
+    <!-- HOME AVATAR BUTTON (top-centre, home screen only) -->
+    <div
+      id="home-avatar-btn"
+      aria-label="Profile"
+      title="Tap to change avatar or name"
+      style="
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5100;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      "
+    >
+      <div style="position: relative; width: 36px; height: 36px">
+        <img
+          id="home-avatar-btn-img"
+          src="images/Avatars/man 1.png"
+          alt="avatar"
+          style="
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: bottom center;
+            border: 2px solid rgba(255, 215, 0, 0.7);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+          "
+          onerror="this.style.display = 'none'"
+        />
+        <div
+          style="
+            position: absolute;
+            bottom: -25px;
+            right: -25px;
+            width: 20px;
+            height: 20px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #000;
+            font-weight: 900;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+          "
+        >
+          &#9998;
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME GEAR ICON (top-right, home screen only) -->
+    <div id="home-gear-btn" aria-label="Settings">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+    </div>
+
+    <!-- GEAR ICON (top-right corner, game-active only) -->
+    <div id="gear-btn" aria-label="Menu">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+    </div>
+
+    <!-- HOME SCREEN SETTINGS MODAL -->
+    <div
+      id="home-settings-modal"
+      class="settings-modal-backdrop"
+      style="display: none"
+    >
+      <div class="settings-modal-box" id="home-settings-box">
+        <div class="settings-modal-header">
+          <span class="settings-modal-title">Settings</span>
+        </div>
+        <div class="settings-modal-body">
+          <div class="settings-group">
+            <div class="settings-label">Game Speed</div>
+            <div id="home-speed-options" class="settings-options-row">
+              <button class="settings-opt" data-speed="1.6">Slow</button>
+              <button class="settings-opt" data-speed="1.0">Normal</button>
+              <button class="settings-opt" data-speed="0.5">Fast</button>
+            </div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Difficulty</div>
+            <div id="home-diff-options" class="settings-options-row">
+              <button class="settings-opt" data-diff="EASY">Easy</button>
+              <button class="settings-opt" data-diff="NORMAL">Normal</button>
+              <button class="settings-opt" data-diff="HARD">Hard</button>
+            </div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Sound</div>
+            <div class="settings-options-row">
+              <button
+                class="settings-opt settings-opt-wide"
+                id="home-sound-toggle"
+              >
+                Sound: On
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-GAME SETTINGS MODAL -->
+    <div
+      id="ingame-settings-modal"
+      class="settings-modal-backdrop"
+      style="display: none"
+    >
+      <div class="settings-modal-box" id="ingame-settings-box">
+        <div class="settings-modal-header">
+          <span class="settings-modal-title">Settings</span>
+        </div>
+        <div class="settings-modal-body">
+          <div class="settings-group">
+            <div class="settings-label">Game Speed</div>
+            <div id="ingame-speed-options" class="settings-options-row">
+              <button class="settings-opt" data-speed="1.6">Slow</button>
+              <button class="settings-opt" data-speed="1.0">Normal</button>
+              <button class="settings-opt" data-speed="0.5">Fast</button>
+            </div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Difficulty</div>
+            <div id="ingame-diff-options" class="settings-options-row">
+              <button class="settings-opt" data-diff="EASY">Easy</button>
+              <button class="settings-opt" data-diff="NORMAL">Normal</button>
+              <button class="settings-opt" data-diff="HARD">Hard</button>
+            </div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Sound</div>
+            <div class="settings-options-row">
+              <button
+                class="settings-opt settings-opt-wide"
+                id="ingame-sound-toggle"
+              >
+                Sound: On
+              </button>
+            </div>
+          </div>
+          <!-- Rules and End Game moved to #ingame-nav-bar footer -->
+          <!-- Keeping hidden legacy buttons for JS compat -->
+          <div style="display: none">
+            <button id="ingame-open-rules">Rules</button>
+            <button id="ingame-end-game">End Game</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="game-container">
+      <!-- TOP SECTION: HUD + CPU players -->
+      <div id="top-section">
+        <!-- HUD BAR -->
+        <div id="hud-bar">
+          <div id="counter-container"></div>
+        </div>
+
+        <!-- CPU PLAYERS ROW (players 1, 2, 3 — circular order from human) -->
+        <div id="cpu-player-grid">
+          <div id="player-1" class="player-box cpu-box">
+            <div class="avatar-pod">
+              <div class="speech-bubble" id="bubble-1"></div>
+              <div class="avatar-circle">
+                <img
+                  class="avatar-img"
+                  src="images/Avatars/man 1.png"
+                  alt="avatar"
+                  onerror="this.style.display = 'none'"
+                />
+              </div>
+              <div class="player-name"></div>
+            </div>
+            <div class="card-stack-wrap">
+              <div class="card-slot" data-index="0"></div>
+              <div class="card-slot" data-index="1"></div>
+              <div class="card-slot" data-index="2"></div>
+              <div class="card-slot" data-index="3"></div>
+            </div>
+          </div>
+
+          <div id="player-2" class="player-box cpu-box">
+            <div class="avatar-pod">
+              <div class="speech-bubble" id="bubble-2"></div>
+              <div class="avatar-circle">
+                <img
+                  class="avatar-img"
+                  src="images/Avatars/man 2.png"
+                  alt="avatar"
+                  onerror="this.style.display = 'none'"
+                />
+              </div>
+              <div class="player-name"></div>
+            </div>
+            <div class="card-stack-wrap">
+              <div class="card-slot" data-index="0"></div>
+              <div class="card-slot" data-index="1"></div>
+              <div class="card-slot" data-index="2"></div>
+              <div class="card-slot" data-index="3"></div>
+            </div>
+          </div>
+
+          <div id="player-3" class="player-box cpu-box">
+            <div class="avatar-pod">
+              <div class="speech-bubble" id="bubble-3"></div>
+              <div class="avatar-circle">
+                <img
+                  class="avatar-img"
+                  src="images/Avatars/woman 1.png"
+                  alt="avatar"
+                  onerror="this.style.display = 'none'"
+                />
+              </div>
+              <div class="player-name"></div>
+            </div>
+            <div class="card-stack-wrap">
+              <div class="card-slot" data-index="0"></div>
+              <div class="card-slot" data-index="1"></div>
+              <div class="card-slot" data-index="2"></div>
+              <div class="card-slot" data-index="3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode banner — anchored 20px below CPU player grid -->
+        <div id="mode-banner-container">
+          <div id="special-label"></div>
+        </div>
+      </div>
+
+      <!-- KEEP legacy #player-grid hidden for JS compatibility -->
+      <div id="player-grid" style="display: none !important">
+        <div id="player-0-legacy"></div>
+      </div>
+
+      <div id="director-zone">
+        <div id="home-records" class="records-display"></div>
+
+        <div id="game-ui-stack">
+          <div id="upcard-wrapper" class="hybrid-test-row final-play-row">
+            <div class="card-zone">
+              <div id="discard-pile-slot" class="discard-pile-slot"></div>
+            </div>
+
+            <div class="card-zone">
+              <div id="draw-pile-slot" class="draw-pile-slot"></div>
+            </div>
+          </div>
+
+          <!-- DANGER METER -->
+          <div id="danger-meter" aria-label="Danger level">
+            <div id="danger-meter-fill"></div>
+          </div>
+        </div>
+
+        <div id="home-menu">
+          <button id="btn-start-game" class="menu-btn menu-btn-primary">
+            <div class="menu-btn-inner">
+              <span class="menu-btn-label">Start Game</span>
+            </div>
+          </button>
+          <button id="btn-profile-home" class="menu-btn menu-btn-secondary">
+            <div class="menu-btn-inner">
+              <span class="menu-btn-label">Profile</span>
+            </div>
+          </button>
+          <button id="btn-rules-home" class="menu-btn menu-btn-secondary">
+            <div class="menu-btn-inner">
+              <span class="menu-btn-label">Rules</span>
+            </div>
+          </button>
+          <button
+            id="btn-records-home-menu"
+            class="menu-btn menu-btn-secondary"
+          >
+            <div class="menu-btn-inner">
+              <span class="menu-btn-label">Records</span>
+            </div>
+          </button>
+          <button
+            id="btn-settings-home-menu"
+            class="menu-btn menu-btn-secondary"
+          >
+            <div class="menu-btn-inner">
+              <span class="menu-btn-label">Settings</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- BOTTOM SECTION: controls + human player hand -->
+      <div id="bottom-section">
+        <!-- Controls — anchored 50px above human player box -->
+        <div id="controls">
+          <div class="button-row-container">
+            <div id="standard-controls" class="button-row">
+              <button class="guess-btn btn-hl" data-guess="higher">
+                Higher
+              </button>
+              <button class="guess-btn btn-hl" data-guess="lower">Lower</button>
+            </div>
+
+            <div id="social-controls" class="button-row">
+              <button class="theme-btn btn-hl" data-theme="color">COLOR</button>
+              <button class="theme-btn btn-hl" data-theme="suit">SUIT</button>
+            </div>
+
+            <div id="utility-row" class="button-row">
+              <button id="btn-view-stats" class="nav-btn">Stats</button>
+              <button id="btn-end-game-new" class="nav-btn">New Game</button>
+            </div>
+          </div>
+        </div>
+        <!-- HUMAN PLAYER HAND (prominent, bottom) -->
+        <div id="player-0" class="player-box human-box">
+          <!-- Speech bubble for human player, floats above avatar -->
+          <div class="speech-bubble speech-bubble-human" id="bubble-0"></div>
+          <!-- Floating centered avatar overlapping the card tray -->
+          <div
+            class="human-avatar-float"
+            id="human-avatar-btn"
+            title="Tap to change avatar"
+          >
+            <img
+              class="avatar-img"
+              id="human-avatar-img"
+              src="images/Avatars/man 1.png"
+              alt="avatar"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="avatar-change-hint">&#9998;</div>
+          </div>
+          <!-- Name pill sits above the card tray -->
+          <div class="player-name human-name-pill"></div>
+          <div class="card-stack-wrap">
+            <div class="card-slot" data-index="0"></div>
+            <div class="card-slot" data-index="1"></div>
+            <div class="card-slot" data-index="2"></div>
+            <div class="card-slot" data-index="3"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IN-GAME PERSISTENT FOOTER NAV (Grid row 4, game-active only) -->
+      <div id="ingame-nav-bar">
+        <!-- Quit / End Game -->
+        <button
+          class="ingame-nav-slot"
+          id="ingame-nav-quit"
+          aria-label="End Game"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 10 4 15 9 20"></polyline>
+            <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+          </svg>
+          <span class="ingame-nav-label" id="ingame-nav-quit-label">QUIT</span>
+        </button>
+        <!-- Rules -->
+        <button
+          class="ingame-nav-slot"
+          id="ingame-nav-rules"
+          aria-label="Rules"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path
+              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+            ></path>
+          </svg>
+          <span class="ingame-nav-label">RULES</span>
+        </button>
+        <!-- Settings -->
+        <button
+          class="ingame-nav-slot"
+          id="ingame-nav-settings"
+          aria-label="Settings"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+          <span class="ingame-nav-label">SETTINGS</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden nav buttons kept for JS compatibility (not rendered) -->
+    <div style="display: none">
+      <button id="btn-new-game">NEW GAME</button>
+      <button id="btn-rules">Rules</button>
+      <button id="btn-settings-nav">Settings</button>
+      <button id="btn-records-home">Records</button>
+      <button id="btn-settings-home">Settings</button>
+    </div>
+
+    <div id="rules-overlay">
+      <div class="rules-content" style="padding: 0 0 0">
+        <!-- HEADER — blue bar -->
+        <header
+          style="
+            background: linear-gradient(180deg, #4a9fe8 0%, #1e6fc4 100%);
+            border-radius: 14px 14px 0 0;
+            padding: 16px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+          "
+        >
+          <h2
+            style="
+              font-family: &quot;Inter&quot;, sans-serif;
+              color: #fff;
+              margin: 0;
+              font-size: var(--fs-menu);
+              font-weight: 800;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            "
+          >
+            BOUNTY: QUICK RULES
+          </h2>
+        </header>
+
+        <div
+          style="
+            padding: 14px 14px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          "
+        >
+          <!-- OBJECTIVE -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Objective
+            </h3>
+            <div
+              style="
+                padding: 10px;
+                background: rgba(26, 39, 68, 0.05);
+                border-radius: 6px;
+                border-left: 4px solid #aaa;
+              "
+            >
+              <span
+                style="
+                  font-family: &quot;Inter&quot;, sans-serif;
+                  color: #1a2744;
+                  font-size: var(--fs-small);
+                "
+                >Be the last player standing or hit an <b>Instant Win</b> in a
+                Bounty Challenge.</span
+              >
+            </div>
+          </div>
+
+          <!-- SETUP -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Setup
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.06);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Deck</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >52-card deck with 4 colors. <b>Aces are low</b>,
+                  <b>Kings are high</b>.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.06);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >First Player</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >All players flip 1 card. The lowest rank goes first. Play
+                  proceeds clockwise.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.06);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Up Card</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Shuffle the deck and flip the first card to create the first
+                  <b>Up Card</b>.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- GAMEPLAY -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Gameplay
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.05);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Normal Turn</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Guess if the next card from the deck is
+                  <b style="color: #1a6040">higher</b> or
+                  <b style="color: #a01818">lower</b> than the current Up
+                  Card.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 120, 60, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #1a8040;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a6040;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Correct</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >The flipped card becomes the new Up Card and your turn
+                  ends.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(200, 30, 30, 0.06);
+                  border-radius: 6px;
+                  border-left: 4px solid #c02020;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #a01818;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Incorrect</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Add the flipped card to your hand and your turn ends.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.05);
+                  border-radius: 6px;
+                  border-left: 4px solid #999;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #555;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Tie</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Re-draw. You may change your guess.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.05);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Empty Deck</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Keep the Up Card. Shuffle the discard pile to create a new
+                  draw pile.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- ELIMINATION & COMBOS -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Elimination &amp; Combos
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.05);
+                  border-radius: 6px;
+                  border-left: 4px solid #2176c7;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >You are eliminated if you hold <b>4 cards</b> at the end of
+                  your turn, unless you can form a discard combo:</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(210, 100, 0, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c87000;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #c87000;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Pair</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >2 cards of the same rank.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(210, 100, 0, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c87000;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #c87000;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >3-Card Straight</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >3 cards in sequence (e.g., 4-5-6).</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(210, 100, 0, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c87000;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #c87000;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >3-Card Flush</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >3 cards of the same color.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 10px;
+                  background: rgba(210, 100, 0, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c87000;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #c87000;
+                    font-size: var(--fs-small);
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    display: block;
+                    margin-bottom: 3px;
+                  "
+                  >Combo Play</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  >Discard these immediately and end your turn.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- HAND ACTIONS -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Hand Actions
+            </h3>
+            <p
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                font-size: var(--fs-small);
+                color: #666;
+                font-weight: 600;
+                margin: 0 0 6px;
+              "
+            >
+              Play these before you make your guess.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(200, 30, 30, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c02020;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #d94545;
+                    color: #fff;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >4</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  ><b style="color: #a01818">Sabotage:</b> Skip your turn. The
+                  next player must guess the card color.</span
+                >
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(30, 100, 220, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #2060b0;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #4587d9;
+                    color: #fff;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >J</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  ><b style="color: #1a5cb0">Shield:</b> Skip your turn. The
+                  next player must guess Higher/Lower.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- UP CARD EFFECTS -->
+          <div>
+            <h3
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                color: #1a2744;
+                font-size: var(--fs-large);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid rgba(26, 39, 68, 0.2);
+                padding-bottom: 5px;
+                margin: 0 0 8px;
+              "
+            >
+              Up Card Effects
+            </h3>
+            <p
+              style="
+                font-family: &quot;Inter&quot;, sans-serif;
+                font-size: var(--fs-small);
+                color: #666;
+                font-weight: 600;
+                margin: 0 0 6px;
+              "
+            >
+              These trigger at the start of your turn.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(26, 39, 68, 0.05);
+                  border-radius: 6px;
+                  border-left: 4px solid #aaa;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #bbb;
+                    color: #111;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >3</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  ><b style="color: #333">Triple:</b> You must guess correctly
+                  for 3 cards in a row.</span
+                >
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(26, 120, 60, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #1a8040;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #27ae60;
+                    color: #fff;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >7</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  ><b style="color: #1a7a3a">7:</b> A correct guess earns you a
+                  discard.</span
+                >
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(130, 0, 200, 0.06);
+                  border-radius: 6px;
+                  border-left: 4px solid #9930d9;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #9b30d9;
+                    color: #fff;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >Q</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                  "
+                  ><b style="color: #7a1faa">Queen (Rainbow):</b> Starting with
+                  you, players guess the color of the next card. This continues
+                  until a player guesses correctly, or until the Queen is
+                  covered by a discard or a Hand Action.</span
+                >
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 34px 1fr;
+                  align-items: start;
+                  gap: 10px;
+                  padding: 10px;
+                  background: rgba(200, 160, 0, 0.07);
+                  border-radius: 6px;
+                  border-left: 4px solid #c8960a;
+                "
+              >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    background: #c8960a;
+                    color: #fff;
+                    width: 26px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                  "
+                  >K</span
+                >
+                <span
+                  style="
+                    font-family: &quot;Inter&quot;, sans-serif;
+                    color: #1a2744;
+                    font-size: var(--fs-small);
+                    line-height: 1.4;
+                  "
+                  ><b style="color: #9a6800">King (Bounty Challenge):</b> If you
+                  hold a card, you may accept or decline the challenge. If you
+                  <b>accept</b>, flip one card for every card in your hand. If
+                  you match any rank, you
+                  <b style="color: #9a6800">win instantly</b>. If you fail, take
+                  the last card and end your turn. If you <b>decline</b>, play a
+                  standard turn.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="close-hint" style="padding-bottom: 20px">
+          TAP ANYWHERE TO CLOSE
+        </div>
+      </div>
+    </div>
+
+    <div id="settings-overlay" class="rules-overlay" style="display: none">
+      <div
+        class="rules-content"
+        style="
+          border: none;
+          height: auto;
+          max-height: 95vh;
+          width: 98%;
+          max-width: 650px;
+          padding: 20px 0px;
+        "
+      >
+        <header style="text-align: center; margin-bottom: 20px">
+          <h2
+            style="
+              color: var(--gold);
+              margin: 0;
+              letter-spacing: 0.5px;
+              font-size: 2.2rem;
+              font-weight: 900;
+            "
+          >
+            Settings
+          </h2>
+        </header>
+
+        <div class="rules-stack" style="padding: 0 15px">
+          <section class="rules-section">
+            <h3>Game Speed</h3>
+            <div id="speed-options" class="button-row">
+              <button class="nav-btn" data-speed="1.6">SLOW</button>
+              <button class="nav-btn setting-active" data-speed="1.0">
+                NORMAL
+              </button>
+              <button class="nav-btn" data-speed="0.5">FAST</button>
+            </div>
+          </section>
+
+          <section class="rules-section">
+            <h3>Difficulty</h3>
+            <div id="diff-options" class="button-row">
+              <button class="nav-btn" data-diff="EASY">EASY</button>
+              <button class="nav-btn setting-active" data-diff="NORMAL">
+                NORMAL
+              </button>
+              <button class="nav-btn" data-diff="HARD">HARD</button>
+            </div>
+          </section>
+
+          <section class="rules-section">
+            <h3>Sound</h3>
+            <button id="btn-toggle-sound" class="nav-btn" style="width: 100%">
+              Sound: On
+            </button>
+          </section>
+        </div>
+
+        <br /><br />
+
+        <div class="close-hint">Tap anywhere to close</div>
+      </div>
+    </div>
+
+    <!-- Settings Modal Bridge Script -->
+    <script>
+      (function () {
+        // ── Sound helper — calls SoundManager if available ──────────────────
+        function playSound(name) {
+          try {
+            if (window.SoundManager && window.SoundManager.play)
+              window.SoundManager.play(name);
+          } catch (e) {}
+        }
+
+        // ── Helpers ──────────────────────────────────────────────────────────
+        function openModal(id) {
+          var m = document.getElementById(id);
+          if (m) {
+            m.style.display = "flex";
+            document.body.classList.add("settings-active");
+          }
+        }
+        function closeModal(id) {
+          var m = document.getElementById(id);
+          if (m) {
+            m.style.display = "none";
+            document.body.classList.remove("settings-active");
+          }
+        }
+
+        // ── Shared settings state sync ────────────────────────────────────────
+        function syncOptionsFromSource(srcId, targetRowId, attr) {
+          var srcRow = document.getElementById(srcId);
+          var tgtRow = document.getElementById(targetRowId);
+          if (!srcRow || !tgtRow) return;
+          var activeBtn = srcRow.querySelector(
+            '.setting-active, [class*="active"]',
+          );
+          if (!activeBtn) return;
+          var val = activeBtn.getAttribute(attr);
+          tgtRow.querySelectorAll(".settings-opt").forEach(function (b) {
+            b.classList.toggle(
+              "settings-opt-active",
+              b.getAttribute(attr) === val,
+            );
+          });
+        }
+
+        function syncSoundLabel(targetId) {
+          var orig = document.getElementById("btn-toggle-sound");
+          var tgt = document.getElementById(targetId);
+          if (!orig || !tgt) return;
+          var label = orig.textContent || "";
+          tgt.textContent = label.toUpperCase();
+          var isOn =
+            label.toUpperCase().indexOf("ON") !== -1 &&
+            label.toUpperCase().indexOf("OFF") === -1;
+          tgt.classList.toggle("settings-opt-active", isOn);
+        }
+
+        function syncAllSoundToggles() {
+          syncSoundLabel("home-sound-toggle");
+          syncSoundLabel("ingame-sound-toggle");
+        }
+
+        function mirrorClick(modalRowId, attr, origRowId) {
+          var modalRow = document.getElementById(modalRowId);
+          if (!modalRow) return;
+          modalRow.addEventListener("click", function (e) {
+            var btn = e.target.closest(".settings-opt");
+            if (!btn) return;
+            var val = btn.getAttribute(attr);
+            if (!val) return;
+            playSound("menu");
+            var origRow = document.getElementById(origRowId);
+            if (origRow) {
+              var match = origRow.querySelector("[" + attr + '="' + val + '"]');
+              if (match) match.click();
+            }
+            modalRow.querySelectorAll(".settings-opt").forEach(function (b) {
+              b.classList.toggle("settings-opt-active", b === btn);
+            });
+            var sibling = modalRowId
+              .replace("home-", "ingame-")
+              .replace(
+                "ingame-",
+                modalRowId.indexOf("home-") === 0 ? "ingame-" : "home-",
+              );
+            var siblingRow = document.getElementById(sibling);
+            if (siblingRow && siblingRow !== modalRow) {
+              siblingRow
+                .querySelectorAll(".settings-opt")
+                .forEach(function (b) {
+                  b.classList.toggle(
+                    "settings-opt-active",
+                    b.getAttribute(attr) === val,
+                  );
+                });
+            }
+          });
+        }
+
+        function openHomeSettings() {
+          syncOptionsFromSource(
+            "speed-options",
+            "home-speed-options",
+            "data-speed",
+          );
+          syncOptionsFromSource(
+            "diff-options",
+            "home-diff-options",
+            "data-diff",
+          );
+          syncAllSoundToggles();
+          openModal("home-settings-modal");
+        }
+
+        function openIngameSettings() {
+          syncOptionsFromSource(
+            "speed-options",
+            "ingame-speed-options",
+            "data-speed",
+          );
+          syncOptionsFromSource(
+            "diff-options",
+            "ingame-diff-options",
+            "data-diff",
+          );
+          syncAllSoundToggles();
+          openModal("ingame-settings-modal");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          // ── In-game gear icon → in-game settings modal (legacy, now hidden) ─
+          var gearBtn = document.getElementById("gear-btn");
+          gearBtn &&
+            gearBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              openIngameSettings();
+            });
+
+          // ── Home gear icon → home settings modal (legacy, now hidden) ──────
+          var homeGearBtn = document.getElementById("home-gear-btn");
+          homeGearBtn &&
+            homeGearBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              openHomeSettings();
+            });
+
+          // ── Trophy icon → records (legacy, now hidden) ────────────────────
+          var trophyBtn = document.getElementById("trophy-btn");
+          trophyBtn &&
+            trophyBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              var orig = document.getElementById("btn-records-home");
+              if (orig) orig.click();
+            });
+
+          // ── Close buttons ─────────────────────────────────────────────────
+          document.getElementById("home-settings-close") &&
+            document
+              .getElementById("home-settings-close")
+              .addEventListener("click", function () {
+                playSound("menu");
+                closeModal("home-settings-modal");
+              });
+          document.getElementById("ingame-settings-close") &&
+            document
+              .getElementById("ingame-settings-close")
+              .addEventListener("click", function () {
+                playSound("menu");
+                closeModal("ingame-settings-modal");
+              });
+
+          // ── Click outside box to close ────────────────────────────────────
+          document.getElementById("home-settings-modal") &&
+            document
+              .getElementById("home-settings-modal")
+              .addEventListener("click", function (e) {
+                if (e.target === this) {
+                  playSound("menu");
+                  closeModal("home-settings-modal");
+                }
+              });
+          document.getElementById("ingame-settings-modal") &&
+            document
+              .getElementById("ingame-settings-modal")
+              .addEventListener("click", function (e) {
+                if (e.target === this) {
+                  playSound("menu");
+                  closeModal("ingame-settings-modal");
+                }
+              });
+
+          // ── Mirror option clicks to hidden original buttons ───────────────
+          mirrorClick("home-speed-options", "data-speed", "speed-options");
+          mirrorClick("home-diff-options", "data-diff", "diff-options");
+          mirrorClick("ingame-speed-options", "data-speed", "speed-options");
+          mirrorClick("ingame-diff-options", "data-diff", "diff-options");
+
+          // ── Sound toggles ─────────────────────────────────────────────────
+          ["home-sound-toggle", "ingame-sound-toggle"].forEach(function (id) {
+            var btn = document.getElementById(id);
+            btn &&
+              btn.addEventListener("click", function () {
+                playSound("menu");
+                var orig = document.getElementById("btn-toggle-sound");
+                if (orig) {
+                  orig.click();
+                  setTimeout(syncAllSoundToggles, 50);
+                }
+              });
+          });
+
+          // ── In-game: Rules button (legacy settings modal button) ──────────
+          document.getElementById("ingame-open-rules") &&
+            document
+              .getElementById("ingame-open-rules")
+              .addEventListener("click", function () {
+                playSound("menu");
+                closeModal("ingame-settings-modal");
+                var orig = document.getElementById("btn-rules");
+                if (orig) orig.click();
+              });
+
+          // ── In-game: End Game button in settings modal (legacy) ───────────
+          var endGameBtn = document.getElementById("ingame-end-game");
+          var endGameConfirming = false;
+          var endGameTimer = null;
+          endGameBtn &&
+            endGameBtn.addEventListener("click", function () {
+              if (!endGameConfirming) {
+                endGameConfirming = true;
+                playSound("menuEnd");
+                endGameBtn.textContent = "CONFIRM END GAME?";
+                endGameBtn.classList.add("settings-endgame-btn-confirm");
+                endGameTimer = setTimeout(function () {
+                  endGameConfirming = false;
+                  endGameBtn.textContent = "END GAME";
+                  endGameBtn.classList.remove("settings-endgame-btn-confirm");
+                }, 3000);
+              } else {
+                clearTimeout(endGameTimer);
+                endGameConfirming = false;
+                endGameBtn.textContent = "END GAME";
+                endGameBtn.classList.remove("settings-endgame-btn-confirm");
+                playSound("menu");
+                closeModal("ingame-settings-modal");
+                var orig = document.getElementById("btn-new-game");
+                if (orig) {
+                  orig.click();
+                  setTimeout(function () {
+                    orig.click();
+                  }, 80);
+                }
+                setTimeout(function () {
+                  var nameOv = document.getElementById("name-overlay");
+                  if (nameOv) nameOv.style.display = "none";
+                  document.body.classList.remove("game-active");
+                  var statsOv = document.getElementById("stats-overlay");
+                  if (statsOv) statsOv.remove();
+                  var recOv = document.getElementById("records-overlay");
+                  if (recOv) recOv.remove();
+                }, 200);
+              }
+            });
+
+          // ── IN-GAME NAV BAR — Quit (with confirm) ────────────────────────
+          var navQuitBtn = document.getElementById("ingame-nav-quit");
+          var navQuitLabel = document.getElementById("ingame-nav-quit-label");
+          var navQuitConfirming = false;
+          var navQuitTimer = null;
+
+          navQuitBtn &&
+            navQuitBtn.addEventListener("click", function () {
+              if (!navQuitConfirming) {
+                navQuitConfirming = true;
+                playSound("menuEnd");
+                navQuitBtn.classList.add("confirming");
+                if (navQuitLabel) navQuitLabel.textContent = "CONFIRM?";
+                navQuitTimer = setTimeout(function () {
+                  navQuitConfirming = false;
+                  navQuitBtn.classList.remove("confirming");
+                  if (navQuitLabel) navQuitLabel.textContent = "QUIT";
+                }, 3000);
+              } else {
+                clearTimeout(navQuitTimer);
+                navQuitConfirming = false;
+                navQuitBtn.classList.remove("confirming");
+                if (navQuitLabel) navQuitLabel.textContent = "QUIT";
+                playSound("menu");
+                var orig = document.getElementById("btn-new-game");
+                if (orig) {
+                  orig.click();
+                  setTimeout(function () {
+                    orig.click();
+                  }, 80);
+                }
+                setTimeout(function () {
+                  var nameOv = document.getElementById("name-overlay");
+                  if (nameOv) nameOv.style.display = "none";
+                  document.body.classList.remove("game-active");
+                  var statsOv = document.getElementById("stats-overlay");
+                  if (statsOv) statsOv.remove();
+                  var recOv = document.getElementById("records-overlay");
+                  if (recOv) recOv.remove();
+                }, 200);
+              }
+            });
+
+          // ── IN-GAME NAV BAR — Rules ───────────────────────────────────────
+          var navRulesBtn = document.getElementById("ingame-nav-rules");
+          navRulesBtn &&
+            navRulesBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              var orig = document.getElementById("btn-rules");
+              if (orig) orig.click();
+            });
+
+          // ── IN-GAME NAV BAR — Settings ────────────────────────────────────
+          var navSettingsBtn = document.getElementById("ingame-nav-settings");
+          navSettingsBtn &&
+            navSettingsBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              openIngameSettings();
+            });
+
+          // ── HOME MENU — Profile button ────────────────────────────────────
+          var profileHomeBtn = document.getElementById("btn-profile-home");
+          profileHomeBtn &&
+            profileHomeBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              if (window.BountyAvatars && window.BountyAvatars.open) {
+                window.BountyAvatars.open();
+              }
+            });
+
+          // ── HOME MENU — Records button ────────────────────────────────────
+          var recordsHomeBtn = document.getElementById("btn-records-home-menu");
+          recordsHomeBtn &&
+            recordsHomeBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              var orig = document.getElementById("btn-records-home");
+              if (orig) orig.click();
+            });
+
+          // ── HOME MENU — Settings button ───────────────────────────────────
+          var settingsHomeBtn = document.getElementById(
+            "btn-settings-home-menu",
+          );
+          settingsHomeBtn &&
+            settingsHomeBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              playSound("menu");
+              openHomeSettings();
+            });
+
+          // ── Set initial active states on load ─────────────────────────────
+          setTimeout(function () {
+            ["home-speed-options", "ingame-speed-options"].forEach(
+              function (rowId) {
+                syncOptionsFromSource("speed-options", rowId, "data-speed");
+              },
+            );
+            ["home-diff-options", "ingame-diff-options"].forEach(
+              function (rowId) {
+                syncOptionsFromSource("diff-options", rowId, "data-diff");
+              },
+            );
+            syncAllSoundToggles();
+          }, 500);
+
+          // ── End-of-game NEW GAME button ───────────────────────────────────
+          var endGameNewBtn = document.getElementById("btn-end-game-new");
+          endGameNewBtn &&
+            endGameNewBtn.addEventListener("click", function () {
+              var statsOv = document.getElementById("stats-overlay");
+              if (statsOv) statsOv.remove();
+              var recOv = document.getElementById("records-overlay");
+              if (recOv) recOv.remove();
+              var newGameBtn = document.getElementById("btn-new-game");
+              if (newGameBtn) {
+                newGameBtn.click();
+                setTimeout(function () {
+                  newGameBtn.click();
+                }, 80);
+              }
+            });
+        });
+      })();
+    </script>
+
+<script type="module" src="/src/main.ts"></script>
+
+    <!-- Avatar Picker System -->
+    <script>
+      (function () {
+        var AVATAR_KEY = "bounty_player_avatar";
+        var NAME_KEY = "BOUNTY_PLAYER_NAME";
+        var DEFAULT_AVATAR = "images/Avatars/man 1.png";
+        var DEFAULT_NAME = "PLAYER 1";
+
+        function playSound(name) {
+          try {
+            if (window.SoundManager && window.SoundManager.play)
+              window.SoundManager.play(name);
+          } catch (e) {}
+        }
+
+        function getSavedAvatar() {
+          try {
+            return localStorage.getItem(AVATAR_KEY) || DEFAULT_AVATAR;
+          } catch (e) {
+            return DEFAULT_AVATAR;
+          }
+        }
+        function saveAvatar(src) {
+          try {
+            localStorage.setItem(AVATAR_KEY, src);
+          } catch (e) {}
+        }
+        function getSavedName() {
+          try {
+            return localStorage.getItem(NAME_KEY) || "";
+          } catch (e) {
+            return "";
+          }
+        }
+        function saveName(n) {
+          try {
+            localStorage.setItem(NAME_KEY, n || DEFAULT_NAME);
+          } catch (e) {}
+        }
+
+        function applyAvatarEverywhere(src) {
+          // In-game human avatar
+          var ha = document.getElementById("human-avatar-img");
+          if (ha) ha.src = src;
+          // Home screen avatar button image
+          var hb = document.getElementById("home-avatar-btn-img");
+          if (hb) hb.src = src;
+          saveAvatar(src);
+        }
+
+        function setInputDisplayMode(input, name) {
+          input.value = name || "";
+          input.placeholder = name ? "" : "TAP TO SET NAME";
+          input.style.background =
+            "linear-gradient(180deg, #6ec6ff 0%, #2e9fe8 55%, #1a7dc8 100%)";
+          input.style.borderColor = "#1a7dc8";
+          input.style.color = "#fff";
+          input.style.cursor = "pointer";
+          input.style.boxShadow =
+            "inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 6px rgba(30,120,220,0.35)";
+          input.style.textShadow = "0 1px 2px rgba(0,0,0,0.25)";
+          input.readOnly = false;
+        }
+
+        function setInputEditMode(input) {
+          input.value = "";
+          input.placeholder = "ENTER YOUR NAME";
+          input.style.background = "#fff";
+          input.style.borderColor = "#2e9fe8";
+          input.style.color = "#1a2744";
+          input.style.cursor = "text";
+          input.style.boxShadow = "0 0 0 3px rgba(30,120,220,0.2)";
+          input.style.textShadow = "none";
+        }
+
+        function openPicker() {
+          playSound("menu");
+          var modal = document.getElementById("avatar-picker-modal");
+          if (!modal) return;
+          modal.style.display = "flex";
+
+          // Populate name input with saved name in blue display mode
+          var nameInput = document.getElementById("avatar-modal-name-input");
+          if (nameInput) {
+            var saved = getSavedName();
+            setInputDisplayMode(nameInput, saved);
+
+            // Click-to-edit: clear field and switch to edit mode
+            nameInput.addEventListener(
+              "focus",
+              function onFocus() {
+                playSound("menu");
+                setInputEditMode(nameInput);
+              },
+              { once: true },
+            );
+          }
+
+          // Highlight currently selected avatar
+          var current = getSavedAvatar();
+          document.querySelectorAll(".avatar-pick-item").forEach(function (el) {
+            el.classList.toggle(
+              "avatar-pick-selected",
+              el.dataset.src === current,
+            );
+          });
+
+          function handleClick(e) {
+            var item = e.target.closest(".avatar-pick-item");
+            if (item) {
+              playSound("menu");
+              applyAvatarEverywhere(item.dataset.src);
+              // Mark selected — stay in the menu
+              document
+                .querySelectorAll(".avatar-pick-item")
+                .forEach(function (el) {
+                  el.classList.toggle("avatar-pick-selected", el === item);
+                });
+            }
+            if (e.target === modal) {
+              saveNameFromInput();
+              closePicker();
+            }
+          }
+
+          var closeBtn = document.getElementById("avatar-picker-close");
+          function closeHandler() {
+            saveNameFromInput();
+            closePicker();
+          }
+          closeBtn &&
+            closeBtn.addEventListener("click", closeHandler, { once: true });
+          modal.addEventListener("click", handleClick);
+          modal._pickerHandler = handleClick;
+        }
+
+        function saveNameFromInput() {
+          var nameInput = document.getElementById("avatar-modal-name-input");
+          if (!nameInput) return;
+          var val = nameInput.value.trim().toUpperCase();
+          if (val) {
+            saveName(val);
+            updateHomeBtnLabel(val);
+          }
+          // Restore blue display mode showing saved name
+          var saved = getSavedName();
+          setInputDisplayMode(nameInput, saved);
+          // Re-arm the focus listener for next edit
+          nameInput.addEventListener(
+            "focus",
+            function onFocus() {
+              playSound("menu");
+              setInputEditMode(nameInput);
+            },
+            { once: true },
+          );
+        }
+
+        function updateHomeBtnLabel(name) {
+          // If you want the home avatar btn to show the name somewhere, extend here
+          // For now it just ensures localStorage is current
+        }
+
+        function closePicker() {
+          playSound("menu");
+          var modal = document.getElementById("avatar-picker-modal");
+          if (!modal) return;
+          modal.style.display = "none";
+          if (modal._pickerHandler) {
+            modal.removeEventListener("click", modal._pickerHandler);
+            modal._pickerHandler = null;
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          // Apply saved avatar to all avatar image targets on load
+          applyAvatarEverywhere(getSavedAvatar());
+
+          // Wire home avatar button (top-centre on home screen)
+          var homeAvatarBtn = document.getElementById("home-avatar-btn");
+          homeAvatarBtn &&
+            homeAvatarBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              openPicker();
+            });
+
+          // Wire in-game human avatar button (bottom player area)
+          var haBtn = document.getElementById("human-avatar-btn");
+          haBtn &&
+            haBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              openPicker();
+            });
+
+          // Save name on input blur and restore blue display mode
+          var nameInputEl = document.getElementById("avatar-modal-name-input");
+          if (nameInputEl) {
+            nameInputEl.addEventListener("blur", saveNameFromInput);
+          }
+        });
+
+        window.BountyAvatars = {
+          open: openPicker,
+          getAvatar: getSavedAvatar,
+          getName: getSavedName,
+        };
+      })();
+    </script>
+  </body>
+</html>
