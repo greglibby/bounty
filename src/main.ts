@@ -12,4 +12,6 @@ import "./styles/components/player-box.css";
 import "./styles/screens/game.css";
 import "./styles/screens/home.css";
 
+import "./ui/InputHandler.js";
+
 console.log("Bounty booting...");

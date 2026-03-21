@@ -22,7 +22,10 @@
     // "noImplicitReturns": true,          // Phase 4.3 — uncomment after 4.2 is clean
 
     // Catch real mistakes
-    "skipLibCheck": false
+    "skipLibCheck": false,
+
+    // Vite client types — enables import.meta.glob and asset imports
+    "types": ["vite/client"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
