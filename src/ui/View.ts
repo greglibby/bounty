@@ -3,6 +3,7 @@ import { MODES, RANK_LABELS, UI_STRINGS, STREWN_CONFIG, FormatCard } from "../co
 import { RecordManager } from "../core/RecordManager.js";
 import { SoundManager } from "../core/SoundManager.js";
 import type { Card, CardColor, GameMode, GameState, Player, GameStats, RankAccuracyStat, IGameEngine, StrewnMetadata } from "../types/index.js";
+import { getCardImage, deckImage } from "../assets/index.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Window augmentation — runtime flags set by Director / Engine
@@ -280,7 +281,7 @@ export const View = {
       img = newImg;
     }
     if (!img.src.endsWith("Deck.png")) {
-      img.src = "images/Cards/Deck.png";
+img.src = deckImage;
     }
 
     // 4. SMART RENDER: Update the Badge only if the exact count changed
@@ -738,12 +739,9 @@ export const View = {
   },
 
   getCardImagePath(card: Card | null | undefined): string {
-    if (!card) return "";
-    const rankMap: Record<number, string> = { 1: "A", 11: "J", 12: "Q", 13: "K" };
-    const color = card.color || "Yellow";
-    const rank = rankMap[card.rank] || String(card.rank);
-    return `images/cards/${color}_${rank}.png`;
-  },
+  if (!card) return "";
+  return getCardImage(card.color, card.rank);
+},
 
   getRankLabel(rank: number): string | number {
     return RANK_LABELS[rank] || rank;
