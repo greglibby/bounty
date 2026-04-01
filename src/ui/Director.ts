@@ -360,6 +360,18 @@ export const Director = {
                     false,
                 );
                 await sleep(TIMING.THINKING);
+            } else {
+                // FIX (double-fire): Show the CPU's guess bubble exactly once, here, after
+                // clearAllBubbles(). It persists through the flip animation.
+                // executeRevealSequence is guarded to NOT re-show it for CPU players.
+                const cpuGuessShouts: Record<string, string> = {
+                    higher: "HIGHER!", lower: "LOWER!", HIGHER: "HIGHER!", LOWER: "LOWER!",
+                    Yellow: "YELLOW!", Red: "RED!", Blue: "BLUE!", Green: "GREEN!",
+                    ACCEPT: "ACCEPT!", DECLINE: "DECLINE!",
+                };
+                const cpuShout: string =
+                    cpuGuessShouts[String(choice)] || `${String(choice).toUpperCase()}!`;
+                View.showBubble(game.currentPlayerIndex, cpuShout, false);
             }
         }
 
@@ -678,13 +690,18 @@ export const Director = {
         if (!result || !(result as SpecialistResult).flipped) return;
 
         const pIdx: number = game.currentPlayerIndex;
+        // FIX (double-fire): CPU bubble was already set during the thinking pause in
+        // playTurn. Only the human player's bubble is set here (they have no prior step).
+        const isHuman: boolean = game.currentPlayerIndex === 0 && !isSimulating;
 
         const guessShouts: Record<string, string> = {
             higher: "HIGHER!", lower: "LOWER!", HIGHER: "HIGHER!", LOWER: "LOWER!",
             Yellow: "YELLOW!", Red: "RED!", Blue: "BLUE!", Green: "GREEN!",
         };
         const guessShout: string = guessShouts[String(choice)] || `${String(choice).toUpperCase()}!`;
-        View.showBubble(pIdx, guessShout, true);
+        if (isHuman) {
+            View.showBubble(pIdx, guessShout, true);
+        }
 
         const guessMsg: string = `${player.name} guessed ${choice.toString()}!`;
         View.renderMessageCenter(game, turnMode, null, guessMsg, game.deck.length + 1);

@@ -587,15 +587,8 @@ export async function playCPUTurns(): Promise<void> {
     window.isProcessingAction = true; // Lock UI
     View.render(game); // Instantly drop the UI upon committing to a guess
 
-    // --- SURGICAL FIX: CPU Guessing Pause ---
-    // Force the CPU to visually announce its guess and wait BEFORE the card deals
-    if (!isSimulating) {
-      View.showBubble(game.currentPlayerIndex, strategicChoice, false);
-      const speedMultiplier: number =
-        parseFloat(localStorage.getItem("BOUNTY_SPEED") ?? "") || 1.0;
-      await sleep(TIMING.THINKING * speedMultiplier);
-    }
-
+    // NOTE: The CPU guess bubble is shown inside Director.playTurn (thinking pause),
+    // so it persists through the flip without a double-fire. Do not show it here.
     await Director.playTurn(game, strategicChoice);
 
     if (game.state.gameOver) break;
