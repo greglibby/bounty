@@ -684,7 +684,7 @@ export const Director = {
             Yellow: "YELLOW!", Red: "RED!", Blue: "BLUE!", Green: "GREEN!",
         };
         const guessShout: string = guessShouts[String(choice)] || `${String(choice).toUpperCase()}!`;
-        View.showBubble(pIdx, guessShout, false);
+        View.showBubble(pIdx, guessShout, true);
 
         const guessMsg: string = `${player.name} guessed ${choice.toString()}!`;
         View.renderMessageCenter(game, turnMode, null, guessMsg, game.deck.length + 1);
