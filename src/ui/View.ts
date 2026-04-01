@@ -99,13 +99,15 @@ const STREWN_LOOKUP: {
   offset: Record<string, { x: number; y: number }>;
 } = {
   rotation: {
-    1: -33, // Slightly pushed past -30
-    2: -23, // Messy intermediate
+    1: -35, // Slightly pushed past -30
+    2: -26, // Messy intermediate
     3: 0,   // Dead straight (Kept for the first card)
-    4: 34,  // Slightly pushed past 30
-    6: -11,  // Very slight tilt left
-    7: 12,   // Very slight tilt right
-    8: -24, // Aggressive mid-left
+    4: -19,  // Slightly pushed past 30
+    5: 34, // Slight tilt left
+    6: 18,   // Very slight tilt right
+    7: 27, // Aggressive mid-left
+    8: -8,  // Aggressive mid-right
+    9: 9,   // Slight tilt left
   },
   offset: {
     A: { x: 0, y: 0 },    // Dead center

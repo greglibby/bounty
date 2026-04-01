@@ -8,6 +8,13 @@ export const SoundManager = {
   // Track which fetches are in-flight so concurrent calls don't double-fetch
   _loading: {} as Record<string, boolean>,
 
+  // Permanently failed sounds — never retried after the first decode failure.
+  // Prevents the retry storm where every play() call re-fires _fetchAndDecode
+  // for a sound whose file is missing or served as the wrong content type (e.g.
+  // Vite's SPA fallback returning index.html for unmatched /sounds/* routes).
+  // Fix: ensure sounds live in public/sounds/ so Vite serves them as raw files.
+  _failed: new Set<string>(),
+
   // Flag: has init() been called?
   isInitialized: false as boolean,
 
@@ -128,17 +135,31 @@ export const SoundManager = {
   },
 
   // Fetch a sound file, decode it, store in _buffers.
-  // Safe to call multiple times — skips if already loaded or loading.
+  // Safe to call multiple times — skips if already loaded, loading, or failed.
   async _fetchAndDecode(name: string, url: string): Promise<void> {
-    if (this._buffers[name] || this._loading[name]) return;
+    if (this._buffers[name] || this._loading[name] || this._failed.has(name)) return;
     this._loading[name] = true;
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("HTTP " + response.status);
+
+      // Guard against Vite's SPA fallback: a missing asset returns HTTP 200
+      // with index.html content, which passes response.ok but fails decodeAudioData.
+      // Reject anything that isn't an audio MIME type before wasting a decode call.
+      const ct = response.headers.get("Content-Type") ?? "";
+      if (!ct.startsWith("audio/") && !ct.startsWith("application/octet-stream")) {
+        throw new Error(
+          `Wrong Content-Type "${ct}" — check that sounds/ is inside public/ ` +
+          `so Vite serves it as a static asset, not as the SPA fallback.`
+        );
+      }
+
       const arrayBuffer = await response.arrayBuffer();
       this._buffers[name] = await this._ctx!.decodeAudioData(arrayBuffer);
     } catch (e) {
-      console.warn("[SoundManager] Failed to decode " + name + ":", e);
+      // Mark permanently failed so play() never retries this sound again.
+      this._failed.add(name);
+      console.warn("[SoundManager] Failed to load '" + name + "' (" + url + "):", e);
     } finally {
       this._loading[name] = false;
     }
@@ -163,7 +184,9 @@ export const SoundManager = {
     const buffer = this._buffers[effect];
 
     if (!buffer) {
-      // Buffer not decoded yet — attempt a late decode then play
+      // Skip permanently failed sounds — no retry, no noise in the console.
+      if (this._failed.has(effect)) return;
+      // Buffer not decoded yet — attempt a late decode then play.
       const url = this._files[effect];
       if (url && !this._loading[effect]) {
         this._fetchAndDecode(effect, url).then(() => this._playBuffer(effect));
